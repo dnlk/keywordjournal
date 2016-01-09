@@ -1,0 +1,29 @@
+This app is being designed to make it simple and convenient to write a journal entry with tagged words, where the tagged words can be associated with values that are unique to each user. For example, a user might write "The #weather(temp(c): 20, wind(kph): 15) is beautiful". The other side of the app is to let the user track their data in various ways, and display it in charts and graphs.
+
+
+UI
+
+Journal Entry:
+Simple text box and submit button.
+
+Graphs/Charts (not designed)
+
+
+Webserver
+
+Serve pages
+Get journal entries and send them to parser
+Request analytics and graphs (effectively from DB)
+
+
+Journal Post Parser
+
+Look for #'s in the text body, and parse the text in the subsequent enclosing parentheses (for simplicity, forbid parentheses in the enclosed text). In the parentheses, look for comma delimited key:value pairs.
+
+Record the post, the keywords, and their arguments into the DB as implied by the DB schema. If the arguments are the wrong form, or the the user has not registered the keywords they are trying to use, this should be considered an error (in the future it will be more user friendly).
+
+
+Analytics and Data Views
+
+The user should be able to track their data, or look at other statistics in interesting ways. For example, what percentage of their days do they mention #sad, versus #happy, or what has their weight been over a period of time.
+
