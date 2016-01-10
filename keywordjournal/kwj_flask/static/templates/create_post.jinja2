@@ -1,0 +1,10 @@
+{% extends base_template.jinja2 %}
+<form action="/api/post" method="POST">
+    <input type="text" name="post_title">
+    <input type="textarea" name="post_body">
+    <input type="submit" name="submit" value="submit-value">
+</form>
+
+{% for post in previous_posts %}
+
+{% endfor %}
