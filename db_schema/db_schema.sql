@@ -45,5 +45,6 @@ CREATE TABLE user_keyword_posted_arg (
 CREATE TABLE user_session (
     id INTEGER PRIMARY KEY,
     user_id INTEGER,
+    token TEXT,
     created DATETIME
 );

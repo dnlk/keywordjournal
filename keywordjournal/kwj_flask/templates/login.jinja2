@@ -1,0 +1,11 @@
+{% extends "base_template.jinja2" %}
+
+{% block body %}
+<form action="/api/user_session" method="POST">
+    <input type="email" name="email"> Email
+    <br>
+    <input type="password" name="password"> Password
+    <br>
+    <input type="submit" name="submit" value="Login">
+</form>
+{% endblock %}
