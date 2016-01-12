@@ -11,6 +11,13 @@ from werkzeug import security
 
 from keywordjournal.kwj_flask import connection
 
+__doc__ = """
+This is a non complete, non perfect login system, but it is good enough for now to work
+for dev purposes.
+
+Considering using https://pypi.python.org/pypi/itsdangerous
+"""
+
 
 RAND_CHAR_POOL = string.digits + string.ascii_letters
 
@@ -37,7 +44,7 @@ def gen_random_str(n=16):
 def setup_user_session(email):
     conn = flask.g.db
     token_str = gen_random_str()
-
+    user_id_query = 'SELECT id FROM user WHERE email = "{email}"'.format(email=email)
     delete_token_query = (
             'DELETE FROM user_session WHERE user_id = ('
             'SELECT id FROM user WHERE email = "%s")' % email
@@ -52,8 +59,10 @@ def setup_user_session(email):
     )
     curs.execute(insert_token_query)
     conn.commit()
+    user_id = next(curs.execute(user_id_query))[0]
     flask.session['email'] = email
     flask.session['session_token'] = token_str
+    flask.session['user_id'] = user_id
     return token_str
 
 

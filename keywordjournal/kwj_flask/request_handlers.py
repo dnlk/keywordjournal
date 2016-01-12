@@ -6,6 +6,7 @@ from flask import request
 
 from keywordjournal.kwj_flask.app import app
 from keywordjournal.kwj_flask import authentication as auth
+from keywordjournal.kwj_flask.resources import post as post_resource
 
 
 @app.route('/', methods=['GET'])
@@ -15,7 +16,11 @@ def root():
     GET: If not logged in, redirect to login. If logged in, present a view with a box
          to enter a post and submit. Also show previous posts.
     '''
-    return flask.render_template('create_post.jinja2', email=flask.session['email'])
+    user_id = flask.session['user_id']
+    previous_posts = post_resource.get_posts(user_id)
+    return flask.render_template('create_post.jinja2',
+                                 email=flask.session['email'],
+                                 previous_posts=previous_posts)
 
 
 @app.route('/login', methods=['GET'])
@@ -41,3 +46,16 @@ def user_session():
         return flask.redirect(flask.url_for('root'))
     elif request.method == 'DELETE':
         pass
+
+
+@app.route('/api/post', methods=['POST', 'DELETE'])
+def post():
+    '''
+    POST: Create new post
+    '''
+    if request.method == 'POST':
+        post_body = request.form['post_body']
+        post_title = request.form['post_title']
+        user_id = flask.session['user_id']
+        post_resource.create_new_post(user_id, post_title, post_body)
+        return flask.redirect(flask.url_for('root'))
