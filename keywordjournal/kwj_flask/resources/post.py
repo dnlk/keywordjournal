@@ -4,6 +4,7 @@
 import flask
 import datetime
 
+from keywordjournal.kwj_flask.resources import tags_and_args
 
 def create_new_post(user_id, post_title, post_body):
     conn = flask.g.db
@@ -15,6 +16,8 @@ def create_new_post(user_id, post_title, post_body):
         .format(user_id=user_id, post_body=post_body, post_title=post_title, dt=dt)
     )
     curs.execute(create_new_post_query)
+    last_post_id = curs.lastrowid
+    tags_and_args.create_new_tags_and_args(post_body, last_post_id)
     conn.commit()
 
 
