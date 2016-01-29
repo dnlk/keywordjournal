@@ -66,3 +66,9 @@ db/
 
 # Local misc files
 local/
+
+# Node
+node_modules/
+
+# jspm
+jspm_packages/
