@@ -3,7 +3,8 @@ import jQuery from "jquery";
 
 import "textarea-helper";
 
-import {KeyWordSelectionWindow} from "react-components/keyword-selection-window.js"
+import {KeyWordSelectionWindow} from "react-components/keyword-selection-window.js";
+import {analyzeCurrentWord} from "postparser.js";
 
 export class PostWindow extends React.Component {
   render() {
@@ -33,20 +34,36 @@ class HeaderWindow extends React.Component {
 class BodyWindow extends React.Component {
   constructor(props) {
     super(props);
-    this.state = ({bodyText: 'foo'});
+    this.state = ({bodyText: '', currentWord: ''});
 
     this.handleKeyStroke = this.handleKeyStroke.bind(this);
   }
 
   handleKeyStroke(e) {
-    this.setState({bodyText: e.target.value});
-    console.log(e);
-    console.log(e.target);
+    var text = e.target.value;
+    this.setState({bodyText: text});
+
     var $text_area = $('#postTextarea');
-    var caretPos = $text_area.textareaHelper('caretPos');
-    var top = caretPos.top.toString() + 'px';
-    var left = (caretPos.left + 5).toString() + 'px';
+    var caretCursorPos = $text_area.textareaHelper('getOriginalCaretPos');
+    var caretPixelPos = $text_area.textareaHelper('caretPos');
+
+    var currentWordAnalysis = analyzeCurrentWord(text, caretCursorPos);
+    console.log(currentWordAnalysis);
+    this.setState({currentWord: currentWordAnalysis.enclosingWord});
+
     var selectionWindowEl = document.getElementById("keyWordSelectionWindow");
+
+    if (currentWordAnalysis.isTag === true) {
+      selectionWindowEl.style.visibility = 'visible';
+      var top = caretPixelPos.top.toString() + 'px';
+      var left = (caretPixelPos.left + 5).toString() + 'px';
+    }
+    else {
+      selectionWindowEl.style.visibility = 'hidden';
+    }
+
+
+
     selectionWindowEl.style.top = top;
     selectionWindowEl.style.left = left;
   }
@@ -62,7 +79,7 @@ class BodyWindow extends React.Component {
           onChange={this.handleKeyStroke}
         />
         <KeyWordSelectionWindow
-          currentText={this.state.bodyText}
+          currentWord={this.state.currentWord}
         />
       </div>
     );
