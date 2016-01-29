@@ -10,3 +10,4 @@ DATABASE = os.environ[consts.DB_ENV_VAR]
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
+SEND_FILE_MAX_AGE_DEFAULT = 0
