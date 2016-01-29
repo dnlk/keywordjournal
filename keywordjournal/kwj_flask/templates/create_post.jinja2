@@ -2,13 +2,13 @@
 
 {% block body %}
 <h3>Welcome {{email}}. Please make a new post.</h3>
-<form action="/api/post" method="POST">
-    <input type="text" name="post_title" placeholder="Title here">
-    <br>
-    <textarea name="post_body" cols="100" rows="15" placeholder="Post body here"></textarea>
-    <br>
-    <input type="submit" name="submit" value="Submit Post">
-</form>
+
+<div id="post-window">
+</div>
+
+<script>
+  System.import('/static/js/react-app.js');
+</script>
 
 {% for post in previous_posts %}
 <h4>{{post.post_title}}</h4>

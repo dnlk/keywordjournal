@@ -1,0 +1,15 @@
+.keyWordSelectionWindow {
+    background-color: yellow;
+    height: 50px;
+    width: 100px;
+    border: 1px solid red;
+
+}
+
+.bodyWindow {
+    position: relative;
+}
+
+#keyWordSelectionWindow {
+    position: absolute;
+}
