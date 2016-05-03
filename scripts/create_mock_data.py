@@ -17,10 +17,10 @@ WEIGHT_ARG_KILOS_ID = 3
 CREATE_POST_QUERY = 'INSERT INTO post (user_id, text, header, datetime) ' \
                     'VALUES ({user_id}, "{text}", "{header}", "{datetime}")'
 
-CREATE_TAG_QUERY = 'INSERT INTO user_keyword_posted (user_keyword_id, post_id) ' \
+CREATE_TAG_QUERY = 'INSERT INTO posted_keyword (user_keyword_id, post_id) ' \
                    'VALUES ({user_keyword_id}, {post_id})'
 
-CREATE_ARG_QUERY = 'INSERT INTO user_keyword_posted_arg (user_keyword_posted_id, arg_id, param_value) ' \
+CREATE_ARG_QUERY = 'INSERT INTO posted_arg (user_keyword_posted_id, arg_id, param_value) ' \
                    'VALUES ({user_keyword_posted_id}, {arg_id}, "{param_value}")'
 
 

@@ -7,9 +7,8 @@ import datetime
 import functools
 
 import flask
-from werkzeug import security
 
-from keywordjournal.kwj_flask import connection
+from keywordjournal.kwj_flask import security
 
 __doc__ = """
 This is a non complete, non perfect login system, but it is good enough for now to work
@@ -19,11 +18,7 @@ Considering using https://pypi.python.org/pypi/itsdangerous
 """
 
 
-RAND_CHAR_POOL = string.digits + string.ascii_letters
 
-
-def hash_pw(pw):
-    return security.generate_password_hash(pw)
 
 
 def validate_user(email, password):
@@ -34,16 +29,15 @@ def validate_user(email, password):
         hashed_pw = next(res)[0]
     except StopIteration:
         return None
-    return security.check_password_hash(hashed_pw, password)
+    return security.validate_password(hashed_pw, password)
 
 
-def gen_random_str(n=16):
-    return ''.join(random.choice(RAND_CHAR_POOL) for _ in range(16))
+
 
 
 def setup_user_session(email):
     conn = flask.g.db
-    token_str = gen_random_str()
+    token_str = security.gen_random_str()
     user_id_query = 'SELECT id FROM user WHERE email = "{email}"'.format(email=email)
     delete_token_query = (
             'DELETE FROM user_session WHERE user_id = ('
@@ -88,7 +82,7 @@ def ensure_valid_user_session(request_handler_func):
         try:
             active_session_token = next(curs.execute(active_session_token_query))[0]
         except StopIteration:
-            return None
+            return flask.redirect(flask.url_for('login'))
         if not active_session_token == session_token:
             return flask.redirect(flask.url_for('login'))
 

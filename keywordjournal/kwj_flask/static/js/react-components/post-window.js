@@ -9,7 +9,7 @@ import {analyzeCurrentWord} from "postparser.js";
 export class PostWindow extends React.Component {
   render() {
     return (
-      <form className="postWindow">
+      <form method="post" action="api/post" className="postWindow">
         <HeaderWindow />
         <br />
         <BodyWindow />

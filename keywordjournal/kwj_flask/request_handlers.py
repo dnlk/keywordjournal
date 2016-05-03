@@ -7,7 +7,7 @@ from flask import request
 from keywordjournal.kwj_flask.app import app
 from keywordjournal.kwj_flask import authentication as auth
 from keywordjournal.kwj_flask.resources import post as post_resource
-from keywordjournal.kwj_flask.resources import tags_and_args as tags_and_args_resource
+# from keywordjournal.kwj_flask.resources import tags_and_args as tags_and_args_resource
 
 
 @app.route('/', methods=['GET'])
@@ -18,7 +18,7 @@ def root():
          to enter a post and submit. Also show previous posts.
     '''
     user_id = flask.session['user_id']
-    previous_posts = post_resource.get_posts(user_id)
+    previous_posts = post_resource.get_all(user_id)
     return flask.render_template('create_post.jinja2',
                                  email=flask.session['email'],
                                  previous_posts=previous_posts)
@@ -58,7 +58,7 @@ def post():
         post_body = request.form['post_body']
         post_title = request.form['post_title']
         user_id = flask.session['user_id']
-        post_resource.create_new_post(user_id, post_title, post_body)
+        post_resource.create(user_id, post_title, post_body)
         return flask.redirect(flask.url_for('root'))
 
 
@@ -66,8 +66,9 @@ def post():
 def tags_and_args():
     '''
     GET: Get all of a users tags along with their arguments, for consupmtion by front end.
-         Obviously, a future implementation will enable filtering.
+         A future implementation will enable filtering.
     '''
+    # TODO - this is broken
     if request.method == 'GET':
         user_id = flask.session['user_id']
         res = tags_and_args_resource.get_tags_and_args(user_id)

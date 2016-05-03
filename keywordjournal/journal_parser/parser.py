@@ -5,9 +5,15 @@ import re
 import json
 import collections
 
+# from keywordjournal.models import PostedArg, PostedKeyword, UserKeyword
+from keywordjournal.models.schema import Keyword, Arg
+
 TAG_EXP_MATCHER = re.compile('#[a-z|A-Z|0-9]*(?:\(.*?\))?')
 TAG_MATCHER = re.compile('#[a-z|A-Z|0-9]*')
 ARGS_MATCHER = re.compile('\(.*\)')
+
+USER_KEYWORD = 'user_keyword'
+USER_KEYWORD_ARG = 'user_keyword_arg'
 
 
 def extract_tag(text):
@@ -16,16 +22,16 @@ def extract_tag(text):
 
 
 def extract_args(text):
+    args_list = []
     try:
         args_unparsed_text = ARGS_MATCHER.findall(text)[0][1: -1]
     except IndexError:
-        return {}
-    split_text = args_unparsed_text.split(',')
-    res = {}
-    for kwarg in split_text:
-        kw, arg = kwarg.split(':')
-        res[kw.strip()] = arg.strip()
-    return res
+        return args_list
+
+    for kwarg in args_unparsed_text.split(','):
+        name, value = kwarg.split(':')
+        args_list.append(Arg(name=name, value=value))
+    return args_list
 
 
 def parse_match(text):
@@ -36,8 +42,8 @@ def parse_match(text):
 
 def find_all_keywords_with_args(text):
     all_matches = TAG_EXP_MATCHER.findall(text)
-    res = collections.defaultdict(list)
+    keywords_list = []
     for match in all_matches:
         tag, args = parse_match(match)
-        res[tag].append(args)
-    return res
+        keywords_list.append(Keyword(word=tag, args=args))
+    return keywords_list

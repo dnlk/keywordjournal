@@ -15,7 +15,7 @@ CREATE TABLE user_keyword (
 	user_id INTEGER
 );
 
-CREATE TABLE user_keyword_arg (
+CREATE TABLE user__arg (
 	id INTEGER PRIMARY KEY,
 	user_keyword_id INTEGER,
 	param_name TEXT
