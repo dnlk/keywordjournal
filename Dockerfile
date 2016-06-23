@@ -45,3 +45,17 @@ ENV KEYWORDJOURNAL_DB_PATH '/srv/keywordjournal_db'
 
 # Extend the python sys.path to include the project (note that it is dist-packages and not site-packages)
 RUN echo /srv/kwj > /usr/local/lib/python3.5/dist-packages/paths.pth
+
+RUN ln -s /usr/bin/nodejs /usr/bin/node
+
+RUN npm install -g jspm
+
+#WORKDIR /srv/kwj/keywordjournal/kwj_flask/static/jspm
+#
+#RUN jspm install
+
+RUN rm /usr/bin/python
+RUN ln -s /usr/bin/python3.5 /usr/bin/python
+
+RUN ln -s /srv/kwj/scripts/setup.sh /usr/bin/setup-kwj
+RUN ln -s /srv/kwj/scripts/runserver.sh /usr/bin/runserver-kwj

@@ -9,7 +9,7 @@ System.config({
     ]
   },
   paths: {
-    "*": "js/*",
+    "*": "kwj_react/*",
     "github:*": "jspm/jspm_packages/github/*",
     "npm:*": "jspm/jspm_packages/npm/*"
   },
