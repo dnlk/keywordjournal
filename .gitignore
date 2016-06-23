@@ -64,6 +64,9 @@ target/
 # Local DB
 db/
 
+# Whitelist the db module in models
+!*/models/db
+
 # Local misc files
 local/
 
