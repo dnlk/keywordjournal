@@ -5,7 +5,8 @@ import "textarea-helper";
 
 import {KeyWordSelectionWindow} from "react-components/keyword-selection-window.js";
 import {analyzeCurrentWord} from "postparser.js";
-import {getMatchingKeywords} from "keyword.js";
+import {getMatchingKeywords, getAvailableKeywords} from "keyword.js";
+import {KeywordArgsWindow} from "react-components/keyword-args-window";
 
 export class PostWindow extends React.Component {
   render() {
@@ -35,10 +36,17 @@ class HeaderWindow extends React.Component {
 class BodyWindow extends React.Component {
   constructor(props) {
     super(props);
-    this.state = ({bodyText: '', currentWord: '', matchingWords: []});
+    this.state = ({
+      bodyText: '',
+      currentWord: '',
+      matchingWords: [],
+      availableKeywords: getAvailableKeywords(),
+    });
 
     this.handleKeyStroke = this.handleKeyStroke.bind(this);
     this.keywordClicked= this.keywordClicked.bind(this);
+
+    //document.getElementById("keywordArgsWindow").style.visibility = 'hidden';
   }
 
   handleKeyStroke(e) {
@@ -75,22 +83,26 @@ class BodyWindow extends React.Component {
     selectionWindowEl.style.left = left;
   }
 
-  keywordClicked(e) {
+  keywordClicked(e, rid, key) {
     var currentWord = this.state.currentWord;
     var clickedWord = e.currentTarget.textContent;
     var caretCursorPos = this.state.caretCursorPos;
     var currentText = this.state.bodyText;
+    var clickedKeyword = this.state.availableKeywords[key];
 
     var newText = currentText.substring(0, caretCursorPos - currentWord.length + 1) +
         clickedWord +
         currentText.substring(caretCursorPos + currentWord.length);
 
-    this.setState({bodyText: newText});
+    this.setState({
+      bodyText: newText,
+      clickedKeyword: clickedKeyword,
+    });
     $('#postTextarea').val(newText);
     document.getElementById("keyWordSelectionWindow").style.visibility = 'hidden';
 
+    document.getElementById("keywordArgsWindow").style.visibility = 'visible';
 
-    
   }
 
   render() {
@@ -107,6 +119,9 @@ class BodyWindow extends React.Component {
           currentWord={this.state.currentWord}
           matchingKeywords={this.state.matchingWords}
           keywordClicked={this.keywordClicked}
+        />
+        <KeywordArgsWindow
+           keyword={this.state.clickedKeyword}
         />
       </div>
     );

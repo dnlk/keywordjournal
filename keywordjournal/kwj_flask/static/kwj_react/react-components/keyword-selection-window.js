@@ -1,28 +1,28 @@
 import React from "react";
 
+function makeKeyword(i, keyword, that) {
+    var key = keyword.key.toString();
+    return (
+        <li key={key} onClick={function(a, b){that.props.keywordClicked(a, b, key)}}>
+            {keyword.keyword}
+        </li>
+    )
+}
+
 export class KeyWordSelectionWindow extends React.Component {
   render() {
     var currentWord = this.props.currentWord;
     var matchingKeywords = this.props.matchingKeywords;
 
-    console.log('matching keywords');
-    console.log(matchingKeywords);
-
     var words = [];
-    for (var word in matchingKeywords) {
+    var that = this;
+    for (var i in matchingKeywords) {
+      //var key = i.toString();
       words.push(
-          <li onClick={this.props.keywordClicked}>
-            {matchingKeywords[word]}
-          </li>
+          makeKeyword(i, matchingKeywords[i], that)
       );
-      console.log(word);
-      console.log('words in');
-      console.log(words);
     }
 
-    console.log('words outer');
-    console.log(words);
-    
     return (
       <div className="keyWordSelectionWindow" id="keyWordSelectionWindow">
         <ul>
