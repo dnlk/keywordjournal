@@ -2,6 +2,7 @@
 
 ### Immediate Todos
 
+- Make understandable please...
 - Finish the prototype of basic UI. Need keyword creation, arg creation, and a basic view on the data.
 
 

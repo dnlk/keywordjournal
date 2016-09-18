@@ -35,7 +35,7 @@ function getEnclosingWord(text, caretPos) {
   var res = {
     startIdx: startIdx,
     enclosingWord: enclosingWord
-  }
+  };
 
   return res;
 }

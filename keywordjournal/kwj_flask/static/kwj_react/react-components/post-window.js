@@ -5,6 +5,7 @@ import "textarea-helper";
 
 import {KeyWordSelectionWindow} from "react-components/keyword-selection-window.js";
 import {analyzeCurrentWord} from "postparser.js";
+import {getMatchingKeywords} from "keyword.js";
 
 export class PostWindow extends React.Component {
   render() {
@@ -34,9 +35,10 @@ class HeaderWindow extends React.Component {
 class BodyWindow extends React.Component {
   constructor(props) {
     super(props);
-    this.state = ({bodyText: '', currentWord: ''});
+    this.state = ({bodyText: '', currentWord: '', matchingWords: []});
 
     this.handleKeyStroke = this.handleKeyStroke.bind(this);
+    this.keywordClicked= this.keywordClicked.bind(this);
   }
 
   handleKeyStroke(e) {
@@ -49,11 +51,16 @@ class BodyWindow extends React.Component {
 
     var currentWordAnalysis = analyzeCurrentWord(text, caretCursorPos);
     console.log(currentWordAnalysis);
-    this.setState({currentWord: currentWordAnalysis.enclosingWord});
+    this.setState({
+      currentWord: currentWordAnalysis.enclosingWord,
+      caretCursorPos: caretCursorPos,
+    });
 
     var selectionWindowEl = document.getElementById("keyWordSelectionWindow");
 
     if (currentWordAnalysis.isTag === true) {
+      var matchingKeywords = getMatchingKeywords(currentWordAnalysis.enclosingWord.slice(1));
+      this.setState({matchingWords: matchingKeywords});
       selectionWindowEl.style.visibility = 'visible';
       var top = caretPixelPos.top.toString() + 'px';
       var left = (caretPixelPos.left + 5).toString() + 'px';
@@ -68,6 +75,24 @@ class BodyWindow extends React.Component {
     selectionWindowEl.style.left = left;
   }
 
+  keywordClicked(e) {
+    var currentWord = this.state.currentWord;
+    var clickedWord = e.currentTarget.textContent;
+    var caretCursorPos = this.state.caretCursorPos;
+    var currentText = this.state.bodyText;
+
+    var newText = currentText.substring(0, caretCursorPos - currentWord.length + 1) +
+        clickedWord +
+        currentText.substring(caretCursorPos + currentWord.length);
+
+    this.setState({bodyText: newText});
+    $('#postTextarea').val(newText);
+    document.getElementById("keyWordSelectionWindow").style.visibility = 'hidden';
+
+
+    
+  }
+
   render() {
     return (
       <div className="bodyWindow">
@@ -80,6 +105,8 @@ class BodyWindow extends React.Component {
         />
         <KeyWordSelectionWindow
           currentWord={this.state.currentWord}
+          matchingKeywords={this.state.matchingWords}
+          keywordClicked={this.keywordClicked}
         />
       </div>
     );
