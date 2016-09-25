@@ -20,3 +20,8 @@
     visibility: hidden;
     border: 1px solid green;
 }
+
+#newKeyword {
+    visibility: hidden;
+    border: 1px solid blue;
+}

@@ -6,7 +6,7 @@ import "textarea-helper";
 import {KeyWordSelectionWindow} from "react-components/keyword-selection-window.js";
 import {analyzeCurrentWord} from "postparser.js";
 import {getMatchingKeywords, getAvailableKeywords} from "keyword.js";
-import {KeywordArgsWindow} from "react-components/keyword-args-window";
+import {KeywordArgsWindow, NewKeyword} from "react-components/keyword-args-window";
 
 export class PostWindow extends React.Component {
   render() {
@@ -39,12 +39,14 @@ class BodyWindow extends React.Component {
     this.state = ({
       bodyText: '',
       currentWord: '',
+      clickedKeyword: {},
       matchingWords: [],
       availableKeywords: getAvailableKeywords(),
     });
 
     this.handleKeyStroke = this.handleKeyStroke.bind(this);
     this.keywordClicked= this.keywordClicked.bind(this);
+    this.newArgSubmit = this.newArgSubmit.bind(this);
 
     //document.getElementById("keywordArgsWindow").style.visibility = 'hidden';
   }
@@ -102,9 +104,34 @@ class BodyWindow extends React.Component {
     document.getElementById("keyWordSelectionWindow").style.visibility = 'hidden';
 
     document.getElementById("keywordArgsWindow").style.visibility = 'visible';
+    
+    // document.getElementById("newKeyword").styl
 
   }
+  
+  newArgClicked() {
+    document.getElementById("newKeyword").style.visibility = 'visible';
+  }
 
+  newArgSubmit(e, rid) {
+    document.getElementById("newKeyword").style.visibility = 'hidden';
+
+    var $parent = $(e.currentTarget).parent();
+    var $argName = $parent.children('#arg-name');
+    var $argType = $parent.children('#arg-type');
+    var newArg = {
+      name: $argName.val(),
+      type: $argType.val(),
+    };
+    var clickedKeyword = this.state.clickedKeyword;
+    clickedKeyword.args.push(newArg);
+    this.setState({
+      clickedKeyword: clickedKeyword,
+    });
+
+    console.log(newArg);
+  }
+  
   render() {
     return (
       <div className="bodyWindow">
@@ -122,6 +149,10 @@ class BodyWindow extends React.Component {
         />
         <KeywordArgsWindow
            keyword={this.state.clickedKeyword}
+           newArgClicked={this.newArgClicked}
+        />
+        <NewKeyword 
+          newArgSubmit={this.newArgSubmit}
         />
       </div>
     );

@@ -14,8 +14,9 @@ export class KeywordArgsWindow extends React.Component {
         var args = [];
 
         for (var i in keywordArgs) {
+            var key = i.toString();
             args.push(
-                <li key="{i.toString()}">
+                <li key={key}>
                     {keyword.args[i].name}
                     <input type="text" />
                 </li>
@@ -28,8 +29,30 @@ export class KeywordArgsWindow extends React.Component {
                 <ul>
                     {args}
                 </ul>
-                <button type="button">Create new argument</button>
+                <button type="button" onClick={this.props.newArgClicked}>Create new argument</button>
             </div>
-        )
+        );
     }
+}
+
+export class NewKeyword extends React.Component {
+
+    render() {
+
+        return (
+            <div id="newKeyword">
+                <h4>Create new keyword</h4>
+                <p>Arg Name</p>
+                <input id="arg-name" type="text" name="arg-name" />
+                <p>Arg Type</p>
+                <select id="arg-type" name="arg-type">
+                    <option value="number">Number</option>
+                    <option value="string">String</option>
+                </select>
+                <button type="button" onClick={this.props.newArgSubmit}>Create Arg</button>
+            </div>
+        );
+
+    }
+
 }
