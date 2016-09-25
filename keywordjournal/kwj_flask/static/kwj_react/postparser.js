@@ -11,7 +11,7 @@ function getEnclosingWord(text, caretPos) {
     }
     startIdx -= 1;
     lastInspectedChar = text[startIdx];
-    if (lastInspectedChar === ' ') {
+    if (lastInspectedChar === ' ' || lastInspectedChar === '\n') {
       startIdx += 1;
       break;
     }
@@ -25,7 +25,8 @@ function getEnclosingWord(text, caretPos) {
 
     lastInspectedChar = text[endIdx];
     endIdx += 1;
-    if (lastInspectedChar === ' ') {
+    if (lastInspectedChar === ' ' || lastInspectedChar === '\n') {
+      endIdx -= 1;
       break;
     }
   }
@@ -47,5 +48,6 @@ function isTag(word) {
 export function analyzeCurrentWord(text, caretPos) {
   var currentWordDesc = getEnclosingWord(text, caretPos);
   currentWordDesc['isTag'] = isTag(currentWordDesc.enclosingWord);
+  currentWordDesc['caretPos'] = caretPos;
   return currentWordDesc
 }

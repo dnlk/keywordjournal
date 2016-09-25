@@ -47,6 +47,7 @@ class BodyWindow extends React.Component {
     this.handleKeyStroke = this.handleKeyStroke.bind(this);
     this.keywordClicked= this.keywordClicked.bind(this);
     this.newArgSubmit = this.newArgSubmit.bind(this);
+    this.finishedWithArgs = this.finishedWithArgs.bind(this);
 
     //document.getElementById("keywordArgsWindow").style.visibility = 'hidden';
   }
@@ -92,20 +93,62 @@ class BodyWindow extends React.Component {
     var currentText = this.state.bodyText;
     var clickedKeyword = this.state.availableKeywords[key];
 
-    var newText = currentText.substring(0, caretCursorPos - currentWord.length + 1) +
-        clickedWord +
-        currentText.substring(caretCursorPos + currentWord.length);
+    // var newText = currentText.substring(0, caretCursorPos - currentWord.length + 1) +
+    //     clickedWord +
+    //     currentText.substring(caretCursorPos + currentWord.length);
 
     this.setState({
-      bodyText: newText,
+      // bodyText: newText,
       clickedKeyword: clickedKeyword,
     });
-    $('#postTextarea').val(newText);
+    // $('#postTextarea').val(newText);
     document.getElementById("keyWordSelectionWindow").style.visibility = 'hidden';
 
     document.getElementById("keywordArgsWindow").style.visibility = 'visible';
     
     // document.getElementById("newKeyword").styl
+
+  }
+
+  finishedWithArgs(e, rid) {
+    var $parent = $(e.currentTarget).parent();
+    var $lis = $parent.find('li');
+
+    var args = [];
+
+    for (var i = 0; i < $lis.length; i++) {
+      var $li = $($lis[i]);
+      var name = $li.textContent;
+      var value = $li.find('input').val();
+
+      args.push({
+        name: name,
+        value: value,
+      });
+    }
+
+    var jsonArgs = JSON.stringify(args);
+
+    var currentWord = this.state.currentWord;
+    var caretCursorPos = this.state.caretCursorPos;
+    var currentText = this.state.bodyText;
+    var clickedKeyword = this.state.clickedKeyword;
+
+    console.log('currentWord', currentWord);
+    console.log('caretCursorPos', caretCursorPos);
+    console.log('currentText', currentText);
+    console.log('clickedKeyword', clickedKeyword);
+
+    var newText = currentText.substring(0, caretCursorPos - currentWord.length + 1) +
+        clickedKeyword.keyword + '<' + jsonArgs + '>' +
+        currentText.substring(caretCursorPos);
+
+    this.setState({
+      bodyText: newText,
+    });
+
+    $('#postTextarea').val(newText);
+
 
   }
   
@@ -150,6 +193,7 @@ class BodyWindow extends React.Component {
         <KeywordArgsWindow
            keyword={this.state.clickedKeyword}
            newArgClicked={this.newArgClicked}
+           finishedWithArgs={this.finishedWithArgs}
         />
         <NewKeyword 
           newArgSubmit={this.newArgSubmit}

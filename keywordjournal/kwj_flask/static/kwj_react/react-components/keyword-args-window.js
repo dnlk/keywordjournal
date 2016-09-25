@@ -30,6 +30,8 @@ export class KeywordArgsWindow extends React.Component {
                     {args}
                 </ul>
                 <button type="button" onClick={this.props.newArgClicked}>Create new argument</button>
+                <br />
+                <button type="button" onClick={this.props.finishedWithArgs}>Done</button>
             </div>
         );
     }
