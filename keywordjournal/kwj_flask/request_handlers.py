@@ -8,6 +8,7 @@ from keywordjournal.kwj_flask.app import app
 from keywordjournal.kwj_flask import authentication as auth
 from keywordjournal.kwj_flask.resources import post as post_resource
 from keywordjournal.kwj_flask.resources import user_keyword as user_keyword_resource
+from keywordjournal.kwj_flask.resources import user_keyword_arg as user_keyword_arg_resource
 # from keywordjournal.kwj_flask.resources import tags_and_args as tags_and_args_resource
 
 
@@ -69,7 +70,6 @@ def tags_and_args():
     GET: Get all of a users tags along with their arguments, for consupmtion by front end.
          A future implementation will enable filtering.
     '''
-    # TODO - this is broken
     if request.method == 'GET':
         user_id = flask.session['user_id']
         res = user_keyword_resource.get_all_keywords_with_args(user_id)
@@ -85,3 +85,15 @@ def tags_and_args():
             for i, user_kw in enumerate(res)
         ]
         return flask.jsonify(data=output_res)
+
+
+@app.route('/api/new_arg', methods=['POST'])
+def new_arg():
+    user_id = flask.session['user_id']
+
+    arg = request.json['arg']
+    keyword = request.json['keyword']
+
+    user_keyword_arg_resource.create(user_id, keyword, arg['name'], arg['type'])
+
+    return '', 200

@@ -6,7 +6,7 @@ import "textarea-helper";
 import {KeyWordSelectionWindow} from "react-components/keyword-selection-window.js";
 import {analyzeCurrentWord} from "postparser.js";
 import {getMatchingKeywords, getAvailableKeywords} from "keyword.js";
-import {KeywordArgsWindow, NewKeyword} from "react-components/keyword-args-window";
+import {KeywordArgsWindow, NewArg} from "react-components/keyword-args-window";
 
 export class PostWindow extends React.Component {
   render() {
@@ -51,7 +51,7 @@ class BodyWindow extends React.Component {
       success: function(data, status, jqXHR) {
         that.setState({availableKeywords: data.data})
       },
-      error: function(jqZHR, status, error) {
+      error: function(jqXHR, status, error) {
         var x = 0;
       }
 
@@ -180,10 +180,33 @@ class BodyWindow extends React.Component {
       type: $argType.val(),
     };
     var clickedKeyword = this.state.clickedKeyword;
-    clickedKeyword.args.push(newArg);
-    this.setState({
-      clickedKeyword: clickedKeyword,
+
+    var that = this;
+    $.ajax({
+      url: '/api/new_arg',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        keyword: clickedKeyword.keyword,
+        arg: newArg
+      }),
+
+      success: function(data, status, jqXHR) {
+        console.log('success!');
+        clickedKeyword.args.push(newArg);
+        that.setState({
+          clickedKeyword: clickedKeyword
+        });
+      },
+      error: function(jqXHR, status, error) {
+        console.log('error!');
+        var x = 0;
+      }
+
     });
+
+
+
 
     console.log(newArg);
   }
@@ -208,7 +231,7 @@ class BodyWindow extends React.Component {
            newArgClicked={this.newArgClicked}
            finishedWithArgs={this.finishedWithArgs}
         />
-        <NewKeyword 
+        <NewArg
           newArgSubmit={this.newArgSubmit}
         />
       </div>

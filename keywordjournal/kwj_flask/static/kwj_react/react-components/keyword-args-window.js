@@ -36,8 +36,8 @@ export class KeywordArgsWindow extends React.Component {
         );
     }
 }
+export class NewArg extends React.Component {
 
-export class NewKeyword extends React.Component {
 
     render() {
 

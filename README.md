@@ -36,14 +36,17 @@ jspm bundle ../kwj_react/react-app ../jspm_build/build.js
 
 ### Immediate Todos
 
-- Bundle the javascript dependencies, because it is taking forever to load the main page.
-- Make the widget for adding a new argument to a keyword functional.
+- Hide and clear the "new keyword arg" widget when you successfully make a new arg
+- Delete keyword args
 - Design and create widget for creating a new keyword.
 - Create a way to modify posts.
+- Logout
 - Create a simple view on the data, e.g. times used per day/month/year (or whatever is most appropriate).
 
 
 ### Lower priority Todos
 
+- Style it so it is nice on mobile
+- Deploy it
 - Standardize time zone?
 - Break out website, api, resource management, (others?) into seperate components (services?)
