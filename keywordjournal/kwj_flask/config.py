@@ -4,7 +4,7 @@
 import os
 from keywordjournal.kwj_flask import consts
 
-DATABASE = os.environ[consts.DB_ENV_VAR]
+DATABASE = consts.KEYWORDJOURNAL_DB_PATH
 
 # todo - figure out what to do with these
 SECRET_KEY = 'development key'

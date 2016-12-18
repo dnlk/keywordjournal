@@ -8,6 +8,7 @@ app.config.from_object('keywordjournal.kwj_flask.config')
 
 
 def connect_db():
+    print(app.config['DATABASE'])
     return sqlite3.connect(app.config['DATABASE'])
 
 
