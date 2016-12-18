@@ -65,8 +65,7 @@ function getAvailableKeywords() {
 }
 
 
-function getMatchingKeywords(partial) {
-    var availableKeywords = getAvailableKeywords();
+function getMatchingKeywords(partial, availableKeywords) {
     var res = [];
     for (var i=0; i < availableKeywords.length; i++) {
         if (availableKeywords[i].keyword.startsWith(partial)) {

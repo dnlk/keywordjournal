@@ -41,7 +41,20 @@ class BodyWindow extends React.Component {
       currentWord: '',
       clickedKeyword: {},
       matchingWords: [],
-      availableKeywords: getAvailableKeywords(),
+      availableKeywords: [],
+    });
+    var that = this;
+    $.ajax({
+      url: '/api/tags_and_args',
+      method: 'GET',
+      dataType: 'json',
+      success: function(data, status, jqXHR) {
+        that.setState({availableKeywords: data.data})
+      },
+      error: function(jqZHR, status, error) {
+        var x = 0;
+      }
+
     });
 
     this.handleKeyStroke = this.handleKeyStroke.bind(this);
@@ -70,7 +83,7 @@ class BodyWindow extends React.Component {
     var selectionWindowEl = document.getElementById("keyWordSelectionWindow");
 
     if (currentWordAnalysis.isTag === true) {
-      var matchingKeywords = getMatchingKeywords(currentWordAnalysis.enclosingWord.slice(1));
+      var matchingKeywords = getMatchingKeywords(currentWordAnalysis.enclosingWord.slice(1), this.state.availableKeywords);
       this.setState({matchingWords: matchingKeywords});
       selectionWindowEl.style.visibility = 'visible';
       var top = caretPixelPos.top.toString() + 'px';

@@ -7,6 +7,7 @@ from flask import request
 from keywordjournal.kwj_flask.app import app
 from keywordjournal.kwj_flask import authentication as auth
 from keywordjournal.kwj_flask.resources import post as post_resource
+from keywordjournal.kwj_flask.resources import user_keyword as user_keyword_resource
 # from keywordjournal.kwj_flask.resources import tags_and_args as tags_and_args_resource
 
 
@@ -71,5 +72,16 @@ def tags_and_args():
     # TODO - this is broken
     if request.method == 'GET':
         user_id = flask.session['user_id']
-        res = tags_and_args_resource.get_tags_and_args(user_id)
-        return flask.jsonify(data=res)
+        res = user_keyword_resource.get_all_keywords_with_args(user_id)
+        output_res = [
+            {
+                'key': i,
+                'keyword': user_kw.keyword.word,
+                'args': [
+                    {'name': arg.param_name, 'type': 'string'}
+                    for arg in user_kw.user_args
+                ]
+            }
+            for i, user_kw in enumerate(res)
+        ]
+        return flask.jsonify(data=output_res)
