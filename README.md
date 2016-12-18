@@ -22,9 +22,15 @@ Set up the database (if it is not already built) - this will probably wipe it if
 setup-kwj
 ```
 
-Run the server
+Run the server.
 ```
 runserver-kwj
+```
+
+The javascript dependencies need to be bundled, or else the main page will load very slow.
+```
+cd keywordjournal/kwj_flask/static/jspm  # It is important to run it from this directory!
+jspm bundle ../kwj_react/react-app ../jspm_build/build.js
 ```
 
 
