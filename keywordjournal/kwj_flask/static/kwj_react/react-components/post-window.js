@@ -138,6 +138,9 @@ class BodyWindow extends React.Component {
         name: name,
         value: value,
       });
+      
+      $li.textContent = '';
+      $li.find('input').val('');
     }
 
     var jsonArgs = JSON.stringify(args);
@@ -161,16 +164,19 @@ class BodyWindow extends React.Component {
     });
 
     $('#postTextarea').val(newText);
-
+    
+    document.getElementById("keywordArgsWindow").style.visibility = 'hidden';
+    document.getElementById("keywordArgsWindow").style.visibility = 'hidden';
+    $('#postTextarea').focus();
 
   }
   
   newArgClicked() {
-    document.getElementById("newKeyword").style.visibility = 'visible';
+    document.getElementById("newArg").style.visibility = 'visible';
   }
 
   newArgSubmit(e, rid) {
-    document.getElementById("newKeyword").style.visibility = 'hidden';
+    document.getElementById("newArg").style.visibility = 'hidden';
 
     var $parent = $(e.currentTarget).parent();
     var $argName = $parent.children('#arg-name');
@@ -204,9 +210,6 @@ class BodyWindow extends React.Component {
       }
 
     });
-
-
-
 
     console.log(newArg);
   }

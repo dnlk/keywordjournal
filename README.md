@@ -36,8 +36,6 @@ jspm bundle ../kwj_react/react-app ../jspm_build/build.js
 
 ### Immediate Todos
 
-- Hide and clear the "new keyword arg" widget when you successfully make a new arg
-- Delete keyword args
 - Design and create widget for creating a new keyword.
 - Create a way to modify posts.
 - Logout
@@ -50,3 +48,4 @@ jspm bundle ../kwj_react/react-app ../jspm_build/build.js
 - Deploy it
 - Standardize time zone?
 - Break out website, api, resource management, (others?) into seperate components (services?)
+- Delete keyword args

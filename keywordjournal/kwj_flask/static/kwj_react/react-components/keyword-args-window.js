@@ -42,7 +42,7 @@ export class NewArg extends React.Component {
     render() {
 
         return (
-            <div id="newKeyword">
+            <div id="newArg">
                 <h4>Create new keyword</h4>
                 <p>Arg Name</p>
                 <input id="arg-name" type="text" name="arg-name" />
