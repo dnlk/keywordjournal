@@ -92,9 +92,7 @@ class BodyWindow extends React.Component {
     else {
       selectionWindowEl.style.visibility = 'hidden';
     }
-
-
-
+    
     selectionWindowEl.style.top = top;
     selectionWindowEl.style.left = left;
   }

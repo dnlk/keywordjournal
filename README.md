@@ -36,7 +36,7 @@ jspm bundle ../kwj_react/react-app ../jspm_build/build.js
 
 ### Immediate Todos
 
-- Design and create widget for creating a new keyword.
+- Make "New Keyword" button functional
 - Create a way to modify posts.
 - Logout
 - Create a simple view on the data, e.g. times used per day/month/year (or whatever is most appropriate).
