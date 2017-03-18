@@ -1,5 +1,5 @@
 
-function newBuffer(size) {
+export function newBuffer(size) {
     return {
         size: size,
         buffer: [],
@@ -8,7 +8,7 @@ function newBuffer(size) {
     }
 }
 
-function writeToBuffer(buffer, thing) {
+export function writeToBuffer(buffer, thing) {
     const idx = buffer.gapStart;
 
     buffer.buffer[idx] = thing;
@@ -21,7 +21,7 @@ function gapSize(buffer) {
 }
 
 
-function getNthEntry(buffer, n) {
+export function getNthEntry(buffer, n) {
     if (n >= buffer.gapStart) {
         return buffer.buffer[gapSize(buffer)];
     }
@@ -57,7 +57,7 @@ function moveCursorRight(buffer, n) {
 }
 
 
-function moveCursor(buffer, n) {
+export function moveCursor(buffer, n) {
     let numberOfMoves = Math.abs(n - buffer.gapStart);
     if (n > buffer.gapStart) {
         moveCursorRight(buffer, numberOfMoves);
@@ -65,4 +65,12 @@ function moveCursor(buffer, n) {
     else if (n < buffer.gapStart) {
         moveCursorLeft(buffer, numberOfMoves);
     }
+}
+
+export function walkUntil(buffer, startIdx, dir, pred) {
+    let idx = startIdx;
+    while (!pred(getNthEntry(buffer, idx)) || idx < 0 || idx >= buffer.size) {
+        idx += dir;
+    }
+    return idx - dir;
 }
