@@ -6,6 +6,7 @@
     },
     "configFile": "config.js",
     "dependencies": {
+      "assert": "github:jspm/nodelibs-assert@^0.1.0",
       "jquery": "npm:jquery@^2.2.0",
       "react": "npm:react@^0.14.7",
       "react-dom": "npm:react-dom@^0.14.7",
@@ -16,5 +17,8 @@
       "babel-runtime": "npm:babel-runtime@^5.8.24",
       "core-js": "npm:core-js@^1.1.4"
     }
+  },
+  "devDependencies": {
+    "jspm": "^0.16.53"
   }
 }

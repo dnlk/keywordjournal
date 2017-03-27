@@ -76,6 +76,7 @@ node_modules/
 # jspm
 jspm_packages/
 jspm_build/
+temp/
 
 # Vagrant
 .vagrant/
