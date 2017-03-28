@@ -2,8 +2,8 @@ import * as gap_buffer from 'gap_buffer';
 import {newBuffer} from 'gap_buffer';
 
 
-BUFFER_SIZE = 2 ** 16;
-var TYPES = {
+let BUFFER_SIZE = 2 ** 16;
+let TYPES = {
     char : 0,
     keyword : 1,
 };
@@ -66,4 +66,41 @@ export class CharacterBuffer {
             enclosingWord: enclosingWord
         };
     }
+
+    getCursorPos() {
+        return this.buffer.gapStart;
+    }
+
+    numCharsBeforeCurs() {
+        return this.buffer.gapStart;
+    }
+
+    numCharsAfterCurs() {
+        return this.buffer.size - this.buffer.gapEnd;
+    }
+
+    numChars() {
+        return this.numCharsAfterCurs() + this.numCharsBeforeCurs();
+    }
+
+    getText(beginIdx, endIdx) {
+        let chars = [];
+        for (let i = beginIdx; i < endIdx; i++) {
+            chars.push(this.buffer.buffer[i].data);
+        }
+        return chars.join('');
+    }
+
+    getTextBefore() {
+        return this.getText(0, this.buffer.gapStart);
+    }
+
+    getTextAfter() {
+        return this.getText(this.buffer.gapEnd, this.buffer.size);
+    }
+
+    getAllText() {
+        return this.getTextBefore() + this.getTextAfter();
+    }
 }
+
