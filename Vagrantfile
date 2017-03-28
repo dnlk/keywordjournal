@@ -14,7 +14,6 @@ Vagrant.configure("2") do |config|
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "ubuntu/xenial64"
   config.vm.provision :shell, path: "bootstrap.sh"
-  config.vm.network :forwarded_port, guest: 80, host: 5678
   config.vm.network :forwarded_port, guest: 5000, host: 5000
 
   # Disable automatic box update checking. If you disable this, then

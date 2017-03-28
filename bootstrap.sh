@@ -38,7 +38,7 @@ npm install -g jspm
 rm /usr/bin/python
 ln -s /usr/bin/python3.5 /usr/bin/python
 
-ln -s /vagrant/keywordjournal /srv/kwj
+ln -s /vagrant /srv/kwj
 
 ln -s /srv/kwj/scripts/setup.sh /usr/bin/setup-kwj
 ln -s /srv/kwj/scripts/runserver.sh /usr/bin/runserver-kwj
