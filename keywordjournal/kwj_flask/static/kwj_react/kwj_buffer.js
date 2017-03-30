@@ -22,7 +22,10 @@ export class CharacterBuffer {
      */
 
     constructor(props) {
+        props = props || {};
         this.buffer = gap_buffer.newBuffer(BUFFER_SIZE);
+        this.keywordLeftWrapper = props.keywordLeftWrapper || '';
+        this.keywordRightWrapper = props.keywordRightWrapper || '';
     }
 
     addCharacter(char) {
@@ -44,12 +47,8 @@ export class CharacterBuffer {
     }
 
     deleteCurrent() {
-        let data = this.buffer.buffer[this.buffer.gapStart];
-        if (data.type === TYPES.char) {
-            this.buffer.gapStart = Math.min(0, this.buffer.gapStart -1);
-        }
-        else if (data.type === TYPES.keyword) {
-
+        if (this.buffer.gapStart > 0) {
+            this.buffer.gapStart -= 1;
         }
     }
 
@@ -86,7 +85,13 @@ export class CharacterBuffer {
     getText(beginIdx, endIdx) {
         let chars = [];
         for (let i = beginIdx; i < endIdx; i++) {
-            chars.push(this.buffer.buffer[i].data);
+            let data = this.buffer.buffer[i];
+            if (data.type === TYPES.keyword) {
+                chars.push(this.keywordLeftWrapper + data.data + this.keywordRightWrapper);
+            }
+            else {
+                chars.push(this.buffer.buffer[i].data);
+            }
         }
         return chars.join('');
     }
