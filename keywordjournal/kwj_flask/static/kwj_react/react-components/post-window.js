@@ -1,5 +1,6 @@
 import React from "react";
 import jQuery from "jquery";
+import * as kwj_buffer from 'kwj_buffer';
 
 import "textarea-helper";
 
@@ -18,10 +19,62 @@ export class PostWindow extends React.Component {
         <br />
         <SubmitPost />
         <p>Hello World!</p>
+        <BufferDiv />
+        <p>Goodbye@</p>
       </form>
     );
   }
 };
+
+class BufferDiv extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.handleKeyStroke = this.handleKeyStroke.bind(this);
+    this.gapBuffer = new kwj_buffer.CharacterBuffer();
+
+    this.state = {
+      text: 'foo'
+    };
+
+  }
+
+  handleKeyStroke(e) {
+    let typedChar = e.key;
+
+    if (e.keyCode === 8) {  // backspace
+      this.gapBuffer.deleteCurrent();
+    }
+    else if (e.key === 'Shift') {
+
+    }
+
+    else {
+      this.gapBuffer.addCharacter(typedChar);
+    }
+
+    this.setState({text: this.gapBuffer.getAllText()});
+
+    console.log(this.gapBuffer.getAllText());
+
+
+    let currentWordAnalysis = analyzeCurrentWord(this.state.text, this.gapBuffer.getCursorPos());
+
+    console.log(currentWordAnalysis);
+  }
+
+  render() {
+    console.log('meow');
+    return (
+        <div
+          onKeyDown={this.handleKeyStroke}
+          onClick={this.onClick}
+          tabIndex="0"
+        >{this.state.text}</div>
+    )
+  }
+}
 
 class HeaderWindow extends React.Component {
   render() {
