@@ -1,0 +1,33 @@
+After experimenting with some attempts to make my own text editor, it has become clear that the UI aspect is a daunting
+task. The text buffer part of the text editor has been done, however, and can be used if it is useful.
+
+Requirements of a text editor:
+- Must be able to report on which cursor position was clicked.
+- Must be able to report on the location of the active cursor.
+- Must be able to report every time a character (or other object) is entered in the text editor.
+- Report when any event happens which changes the state of the editor content, e.g. paste from clipboard.
+- Has an API to set styling for specified text selections.
+- Can hide WYSIWYG features, e.g. from the toolbar
+
+Other things which would be nice to have:
+- Their text buffer is exposed in a way that lets me attach data to it, and retrieve that data (thus making another
+  text buffer, such as the one I wrote, unnecessary).
+- Insert HTML element in a position in the text editor, which will be rendered.
+
+___________________
+
+I looked into a bunch of WYSIWYG editors:
+
+tinymce
+ckeditor
+summernote
+trumbowyg
+
+___________________
+
+I got my hands dirty with tinymce. I could kind of do what I needed to do, but it was a fight every step of the way.
+You can copy and paste html bits around, which  means that I can probably store some data in those bits. It's not
+clear to me how I will get the data I want out of the text editor.
+
+In the end, after days looking into all these text editors, I am left with the feeling that they do not do what I
+want them to do, and I am better off trying to implement my own thing.

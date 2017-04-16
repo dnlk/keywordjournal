@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cloud.tinymce.com/stable/tinymce.min.js"></script>
+
+  <style>
+  
+
+ body {
+    background-color: lightblue;
+}
+
+h1 {
+    color: white;
+    text-align: center;
+}
+
+p {
+    font-family: verdana;
+    font-size: 20px;
+}
+
+.tag {
+	color: green;
+}
+
+  </style>
+  <script>
+  tinymce.init({ 
+  	selector:'textarea',
+  	content_style:".tag {color: blue; font-size: 1.3em}",
+  	init_instance_callback: function (editor) {
+  		editor.on('KeyDown', function(e) {
+  			
+  			console.log(e.keyCode);
+  			console.log(e.key);
+  			let currentNode = editor.selection.getNode();
+  			if (currentNode.className === "tag" && e.keyCode >= 65 && e.keyCode <= 90 || e.keyCode == 32) {
+  				let nextNode = currentNode.nextSibling;
+  				let nextNextNode = nextNode.nextSibling;
+
+  				if (nextNode.textContent.length >= 1) {
+  					nextNextNode.textContent = nextNode.textContent + nextNextNode.textContent;
+  					nextNode.textContent = '';
+  				}
+
+  				let startContent = nextNode.textContent;
+  				nextNode.textContent = e.key + startContent;
+  				e.preventDefault();
+
+  				let rng = tinyMCE.DOM.createRng();
+  				rng.setStart(nextNode, 1);
+  				rng.setEnd(nextNode, 1);
+
+
+  				editor.selection.setRng(rng);
+
+  			}
+  		});
+  		editor.on('Paste', function(e) {
+  			console.log('paste!');
+  		});
+  		editor.on('keypress', function(e) {
+  			let x = 0;
+  		});
+	    editor.on('click', function (e) {
+	      console.log('Element clicked:', e.target.nodeName);
+	    });
+	    editor.on('NodeChange', function(e) {
+	      console.log('node change');
+	      console.log(e.element);
+
+	      let node = e.element;
+
+	      if (node.className === "tag") {
+
+			
+	      	aferNode = editor.dom.select('#after');
+	      	// editor.selection.select(aferNode[0]);
+	      	// editor.selection.collapse(false);
+	      	editor.selection.setCursorLocation(node, 1);
+	      }
+
+	    });
+	  }
+  });
+
+  </script>
+</head>
+<body>
+  <textarea>
+
+  <div id='foo'>foo div</div>
+
+  <p> some test <span class="tag">TAG!!!</span><span id="after"></span>some more</p>
+
+  </textarea>
+
+  <p> hey bro </p>
+</body>
+</html>
