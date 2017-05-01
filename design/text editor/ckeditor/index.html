@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>A Simple Page with CKEditor</title>
+        <!-- Make sure the path to CKEditor is correct. -->
+        <script src="ckeditor_4.6.2_basic/ckeditor/ckeditor.js"></script>
+        <style>
+        .tag {
+            color: green;
+        }
+        </style>
+
+    </head>
+    <body>
+        <form>
+            <textarea name="editor1" id="editor1" rows="10" cols="80">
+                This is my textarea to be replaced with CKEditor.
+
+                <p> some test <span class="tag">TAG!!!</span><span id="after"></span>some more</p>
+
+                <div>this is a div</div>
+
+            </textarea>
+            <script>
+
+                function moveOutOfKeyword(e) {
+                    let selection = CKEDITOR.instances.editor1.getSelection();
+                    // let startElement = selection.getStartElement();
+
+                    let range = selection.getRanges()[0];
+                    let startElement = range.startContainer.getParent();
+                    let endElement = range.endContainer.getParent();
+
+                    if (endElement.hasClass('tag')) {
+                        console.log('tag!');
+
+                        if (startElement.equals(endElement) && range.startOffset === range.endOffset) {
+                            let nextElement = endElement.getNext();
+                            // range.setStartAt(nextElement);
+                            range.moveToPosition(nextElement, CKEDITOR.POSITION_AFTER_START);
+
+                            range.setStartBefore(nextElement);
+                            range.setEndBefore(nextElement);
+
+                            // range.moveToPosition(endElement, 0);
+                            // range.setStartAfter(endElement.getFirst());
+                            // range.setEndAfter(endElement.getFirst());
+                        }
+                        else {
+                            range.setEndAfter(endElement);
+                        }
+                        
+                        
+                        // range.setStart(element.getFirst(), 0);
+                        // range.setEnd(element.getFirst(), 3); //range
+                        selection.selectRanges([range]);
+                    }
+                    else if (startElement.hasClass('tag')) {
+                        console.log('tag!');
+                        range.setStartBefore(startElement);
+                        selection.selectRanges([range]);
+                    }
+                }
+                // Replace the <textarea id="editor1"> with a CKEditor
+                // instance, using default configuration.
+                CKEDITOR.replace( 'editor1', {
+                    on: {
+                        contentDom: function() {
+                            this.document.on( 'mouseup', function(e) {
+                                console.log('mouseup');
+                                console.log(e);
+
+                                moveOutOfKeyword(e);
+                            } );
+                            this.document.on( 'keyup', function(e) {
+                                console.log('keyup');
+                                console.log(e);
+                            } );
+                        }
+                    }
+                } );
+                CKEDITOR.instances.editor1.on('selectionChange', function(e) {
+                    console.log('selectionChange');
+                    console.log(e);
+                });
+                CKEDITOR.instances.editor1.on('elementsPathUpdate', function(e) {
+                    console.log('elementPathUpdate');
+                    console.log(e);
+                });
+            </script>
+        </form>
+    </body>
+</html>

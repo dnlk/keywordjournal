@@ -31,3 +31,20 @@ clear to me how I will get the data I want out of the text editor.
 
 In the end, after days looking into all these text editors, I am left with the feeling that they do not do what I
 want them to do, and I am better off trying to implement my own thing.
+
+____________________
+
+UPDATE
+
+I looked into implementing my own text editor, and I ran into a lot of edge cases.
+- Language specific things, e.g. what constitutes a word
+- Copy / paste support for different platforms
+- Misc event support on platforms
+- Keyboard on mobile
+- Cross platform rendering
+
+I came across this blog post, by one of the ckeditor devs:
+https://medium.com/content-uneditable/contenteditable-the-good-the-bad-and-the-ugly-261a38555e9c
+
+There are for sure more concerns, but I was convinced enough that I decided it was a bad idea. I decided to go
+with ckeditor.
