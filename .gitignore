@@ -80,3 +80,6 @@ temp/
 
 # Vagrant
 .vagrant/
+
+# git submodules
+git_submodules/

@@ -1,0 +1,4 @@
+[submodule "keywordjournal/kwj_flask/static/jspm/git_submodules/ckeditor"]
+	path = keywordjournal/kwj_flask/static/jspm/git_submodules/ckeditor
+	url = git://github.com/ckeditor/ckeditor-releases.git
+	branch = basic/stable
