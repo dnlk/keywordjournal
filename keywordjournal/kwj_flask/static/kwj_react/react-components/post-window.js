@@ -1,6 +1,7 @@
 import React from "react";
 import jQuery from "jquery";
 import * as kwj_buffer from 'kwj_buffer';
+//import foo, * as ckeditor from 'ckeditor'
 
 import "textarea-helper";
 
@@ -24,7 +25,7 @@ export class PostWindow extends React.Component {
       </form>
     );
   }
-};
+}
 
 class BufferDiv extends React.Component {
 
@@ -193,12 +194,55 @@ class BodyWindow extends React.Component {
   }
 
   handleKeyStroke(e) {
-    var text = e.target.value;
-    this.setState({bodyText: text});
+    let editor = CKEDITOR.instances.postTextarea;
+    let selection = editor.getSelection();
+    let range = selection.getRanges()[0];
+    let text = range.startContainer.getText();
 
-    var $text_area = $('#postTextarea');
-    var caretCursorPos = $text_area.textareaHelper('getOriginalCaretPos');
-    var caretPixelPos = $text_area.textareaHelper('caretPos');
+
+    //var text = e.target.value;
+    //this.setState({bodyText: text});
+
+    //var $text_area = $('#postTextarea');
+    var caretCursorPos = range.startOffset;
+    //var caretPixelPos = $text_area.textareaHelper('caretPos');
+
+    var dummyElement = editor.document.createElement( 'img', {
+       attributes :
+       {
+          src : 'null',
+          width : 0,
+          height : 0
+       }
+    });
+
+    editor.insertElement( dummyElement );
+
+    // var x = 0;
+    // var y  = 0;
+    //
+    // var obj = dummyElement.$;
+    //
+    // while (obj.offsetParent){
+    //    x += obj.offsetLeft;
+    //    y  += obj.offsetTop;
+    //    obj    = obj.offsetParent;
+    // }
+    // x += obj.offsetLeft;
+    // y  += obj.offsetTop;
+
+    //window.parent.document.title = "top: " + y + ", left: " + x;
+
+    let boundingRect = dummyElement.$.getBoundingClientRect();
+
+    let xCaretPixelPos = boundingRect.left;
+    let yCaretPixelPos = boundingRect.top + parent.frames[0].frameElement.offsetTop;
+
+
+    // let x = boundingRect.left;
+    // let y = boundingRect.right;
+
+    dummyElement.remove();
 
     var currentWordAnalysis = analyzeCurrentWord(text, caretCursorPos);
     console.log(currentWordAnalysis);
@@ -213,8 +257,9 @@ class BodyWindow extends React.Component {
       var matchingKeywords = getMatchingKeywords(currentWordAnalysis.enclosingWord.slice(1), this.state.availableKeywords);
       this.setState({matchingWords: matchingKeywords});
       selectionWindowEl.style.visibility = 'visible';
-      var top = caretPixelPos.top.toString() + 'px';
-      var left = (caretPixelPos.left + 5).toString() + 'px';
+      var top = yCaretPixelPos.toString() + 'px';
+      //var left = (caretPixelPos.left + 5).toString() + 'px';
+      var left = xCaretPixelPos.toString() + 'px';
     }
     else {
       selectionWindowEl.style.visibility = 'hidden';
@@ -337,6 +382,30 @@ class BodyWindow extends React.Component {
     });
 
     console.log(newArg);
+  }
+
+  componentDidMount(e) {
+    console.log('****mounted!');
+    console.log(React.findDOMNode);
+    let el = React.findDOMNode(this);
+    console.log(el);
+    let x = 0;
+    console.log(CKEDITOR);
+    let that = this;
+    CKEDITOR.replace('postTextarea', {
+      on: {
+        contentDom: function() {
+          this.document.on( 'mouseup', function(e) {
+              console.log('mouseup');
+              console.log(e);
+
+              //moveOutOfKeyword(e);
+          } );
+          this.document.on( 'keyup', that.handleKeyStroke);
+        }
+      }
+      });
+    // el.getElementsByTagName('textarea')[0]
   }
   
   render() {
