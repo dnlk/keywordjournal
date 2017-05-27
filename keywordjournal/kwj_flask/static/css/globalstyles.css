@@ -13,7 +13,6 @@
 #keyWordSelectionWindow {
     position: absolute;
     opacity: .5;
-    visibility: hidden;
 }
 
 #keywordArgsWindow {

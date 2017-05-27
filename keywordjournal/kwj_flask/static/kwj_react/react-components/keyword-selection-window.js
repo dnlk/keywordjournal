@@ -1,7 +1,9 @@
 import React from "react";
 
+import {getMatchingKeywords, getAvailableKeywords} from "keyword.js";
+
 function makeKeyword(i, keyword, that) {
-    var key = keyword.key.toString();
+    let key = keyword.key.toString();
     return (
         <li key={key} onClick={function(a, b){that.props.keywordClicked(a, b, key)}}>
             {keyword.keyword}
@@ -10,26 +12,40 @@ function makeKeyword(i, keyword, that) {
 }
 
 export class KeyWordSelectionWindow extends React.Component {
-  render() {
-    var currentWord = this.props.currentWord;
-    var matchingKeywords = this.props.matchingKeywords;
 
-    var words = [];
-    var raw_keywords = [];
-    var that = this;
-    for (var i in matchingKeywords) {
-      //var key = i.toString();
+  constructor(props) {
+
+      super();
+
+      this.state = {
+          availableKeywords: getAvailableKeywords()
+      };
+
+      this.renderIfKeyword = this.renderIfKeyword.bind(this);
+  }
+
+
+  renderIfKeyword() {
+
+    let currentWord = this.props.currentWord;
+    let currentKeyWordText = currentWord.enclosingWord.slice(1);
+    let matchingKeywords = getMatchingKeywords(currentKeyWordText, this.state.availableKeywords);
+
+    let words = [];
+    let raw_keywords = [];
+    let that = this;
+    for (let i in matchingKeywords) {
       words.push(
           makeKeyword(i, matchingKeywords[i], that)
       );
       raw_keywords.push(matchingKeywords[i].keyword);
     }
 
-    console.log(currentWord.slice(1));
+    console.log(currentKeyWordText);
     console.log(raw_keywords);
-      
-    // if (currentWord.slice(1) in raw_keywords) {
-    if (raw_keywords.includes(currentWord.slice(1))) {
+    console.log(words);
+
+    if (raw_keywords.includes(currentKeyWordText)) {
         console.log('TRRRRUUUUE');
         var new_keyword_button = (
             <div></div>
@@ -41,13 +57,35 @@ export class KeyWordSelectionWindow extends React.Component {
         );
     }
 
+
+    let top = this.props.caretPos.y.toString() + 'px';
+    let left = this.props.caretPos.x.toString() + 'px';
+
     return (
-      <div className="keyWordSelectionWindow" id="keyWordSelectionWindow">
+      <div className="keyWordSelectionWindow" id="keyWordSelectionWindow" style={{top: top, left:left}}>
         <ul>
           {words}
         </ul>
           {new_keyword_button}
       </div>
     );
+
   }
-};
+
+  renderIfNotKeyword() {
+      return (
+          <div></div>
+      )
+  }
+
+  render() {
+    let currentWord = this.props.currentWord;
+
+    if (currentWord.isTag) {
+        return this.renderIfKeyword();
+    }
+    else {
+        return this.renderIfNotKeyword();
+    }
+  }
+}
