@@ -41,10 +41,11 @@ class BodyWindow extends React.Component {
     this.state = ({
       bodyText: '',
       currentWord: '',
-      clickedKeyword: {},
+      clickedKeyword: undefined,
       matchingWords: [],
       availableKeywords: [],
       caretPos: {x: 0, y: 0},
+      keywordArgs: undefined,
     });
     var that = this;
     $.ajax({
@@ -60,21 +61,22 @@ class BodyWindow extends React.Component {
 
     });
 
+    this.setKeywordInEditor = undefined;
+
     this.keywordClicked= this.keywordClicked.bind(this);
     this.newArgSubmit = this.newArgSubmit.bind(this);
     this.finishedWithArgs = this.finishedWithArgs.bind(this);
     this.updateCurrentWord = this.updateCurrentWord.bind(this);
     this.updateCaretPos = this.updateCaretPos.bind(this);
+    this.registerSetKeywordInEditor = this.registerSetKeywordInEditor.bind(this);
   }
 
-
-
-  keywordClicked(e, rid, key) {
-    var currentWord = this.state.currentWord;
-    var clickedWord = e.currentTarget.textContent;
-    var caretCursorPos = this.state.caretCursorPos;
-    var currentText = this.state.bodyText;
-    var clickedKeyword = this.state.availableKeywords[key];
+  keywordClicked(e, rid, clickedKeyword) {
+    // var currentWord = this.state.currentWord;
+    // var clickedWord = e.currentTarget.textContent;
+    // var caretCursorPos = this.state.caretCursorPos;
+    // var currentText = this.state.bodyText;
+    // var clickedKeyword = this.state.availableKeywords[key];
 
     // var newText = currentText.substring(0, caretCursorPos - currentWord.length + 1) +
     //     clickedWord +
@@ -85,60 +87,25 @@ class BodyWindow extends React.Component {
       clickedKeyword: clickedKeyword,
     });
     // $('#postTextarea').val(newText);
-    document.getElementById("keyWordSelectionWindow").style.visibility = 'hidden';
-
-    document.getElementById("keywordArgsWindow").style.visibility = 'visible';
+    // document.getElementById("keyWordSelectionWindow").style.visibility = 'hidden';
+    //
+    // document.getElementById("keywordArgsWindow").style.visibility = 'visible';
 
     // document.getElementById("newKeyword").styl
 
   }
 
-  finishedWithArgs(e, rid) {
-    var $parent = $(e.currentTarget).parent();
-    var $lis = $parent.find('li');
-
-    var args = [];
-
-    for (var i = 0; i < $lis.length; i++) {
-      var $li = $($lis[i]);
-      var name = $li.textContent;
-      var value = $li.find('input').val();
-
-      args.push({
-        name: name,
-        value: value,
-      });
-      
-      $li.textContent = '';
-      $li.find('input').val('');
-    }
-
-    var jsonArgs = JSON.stringify(args);
-
-    var currentWord = this.state.currentWord;
-    var caretCursorPos = this.state.caretCursorPos;
-    var currentText = this.state.bodyText;
-    var clickedKeyword = this.state.clickedKeyword;
-
-    console.log('currentWord', currentWord);
-    console.log('caretCursorPos', caretCursorPos);
-    console.log('currentText', currentText);
-    console.log('clickedKeyword', clickedKeyword);
-
-    var newText = currentText.substring(0, caretCursorPos - currentWord.length + 1) +
-        clickedKeyword.keyword + '<' + jsonArgs + '>' +
-        currentText.substring(caretCursorPos);
-
+  finishedWithArgs(args) {
+    this.setKeywordInEditor(this.state.clickedKeyword, args);
     this.setState({
-      bodyText: newText,
+      clickedKeyword: undefined,
+      currentWord: '',
     });
 
-    $('#postTextarea').val(newText);
-    
-    document.getElementById("keywordArgsWindow").style.visibility = 'hidden';
-    document.getElementById("keywordArgsWindow").style.visibility = 'hidden';
-    $('#postTextarea').focus();
+  }
 
+  registerSetKeywordInEditor(func) {
+    this.setKeywordInEditor = func;
   }
   
   newArgClicked() {
@@ -198,6 +165,7 @@ class BodyWindow extends React.Component {
         <TextEditor
           updateCurrentWord={this.updateCurrentWord}
           updateCaretPos = {this.updateCaretPos}
+          registerSetKeywordInEditor = {this.registerSetKeywordInEditor}
         />
 
         <KeyWordSelectionWindow

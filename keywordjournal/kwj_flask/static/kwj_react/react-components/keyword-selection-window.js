@@ -1,11 +1,12 @@
 import React from "react";
 
 import {getMatchingKeywords, getAvailableKeywords} from "keyword.js";
+import {KeywordArgsWindow, NewArg} from "react-components/keyword-args-window";
 
 function makeKeyword(i, keyword, that) {
     let key = keyword.key.toString();
     return (
-        <li key={key} onClick={function(a, b){that.props.keywordClicked(a, b, key)}}>
+        <li key={key} onClick={function(a, b){that.keywordClicked(a, b, key)}}>
             {keyword.keyword}
         </li>
     )
@@ -22,8 +23,13 @@ export class KeyWordSelectionWindow extends React.Component {
       };
 
       this.renderIfKeyword = this.renderIfKeyword.bind(this);
+      this.keywordClicked = this.keywordClicked.bind(this);
   }
 
+  keywordClicked(a, b, key) {
+    let clickedKeyword = this.state.availableKeywords[key];
+    this.props.keywordClicked(a, b, clickedKeyword);
+  }
 
   renderIfKeyword() {
 

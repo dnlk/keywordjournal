@@ -16,11 +16,14 @@
 }
 
 #keywordArgsWindow {
-    visibility: hidden;
     border: 1px solid green;
 }
 
 #newKeyword {
-    visibility: hidden;
+    /*visibility: hidden;*/
     border: 1px solid blue;
+}
+
+span.kwj-keyword {
+    color: green;
 }

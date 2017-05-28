@@ -50,9 +50,24 @@ export class TextEditor extends React.Component {
 
   }
 
+  setKeyword(keyword, args) {
+    console.log('SET KEYWORD!!!!');
+    console.log(keyword);
+    console.log(args);
+
+    let json_args = JSON.stringify(args);
+    let html_to_insert = '<span class="kwj-keyword" kwj-args="' + json_args + '">' + keyword.keyword + '</span>';
+
+    let editor = CKEDITOR.instances.postTextarea;
+    editor.insertHtml(html_to_insert);
+  }
+
   componentDidMount(e) {
     let that = this;
     CKEDITOR.replace(TextBoxID, {
+      allowedContent: true,
+      // extraPlugins: 'stylesheetparser',
+      // contentsCss:'static/css/globalstyles.css',
       on: {
         contentDom: function() {
           this.document.on( 'mouseup', function(e) {
@@ -62,6 +77,8 @@ export class TextEditor extends React.Component {
         }
       }
     });
+
+    this.props.registerSetKeywordInEditor(this.setKeyword);
   }
 
   render() {
