@@ -4,6 +4,9 @@
 
 import React from "react";
 
+let NEW_ARG_NAME_ID = "new-arg-name";
+let NEW_ARG_TYPE_ID = "new-arg-type";
+
 export class KeywordArgsWindow extends React.Component {
 
     constructor(props) {
@@ -12,7 +15,20 @@ export class KeywordArgsWindow extends React.Component {
         this.renderIfKeywordClicked = this.renderIfKeywordClicked.bind(this);
         this.renderIfNotKeywordClicked = this.renderIfNotKeywordClicked.bind(this);
         this.finishedWithArgs = this.finishedWithArgs.bind(this);
+        this.newArgClicked = this.newArgClicked.bind(this);
 
+    }
+
+    newArgClicked(e, rid) {
+        let newArgNameInput = document.getElementById(NEW_ARG_NAME_ID);
+        let newArgTypeInput = document.getElementById(NEW_ARG_TYPE_ID);
+
+        this.props.keyword.args.push({
+            name: newArgNameInput.value,
+            type: newArgTypeInput.value || "string",
+        });
+
+        this.forceUpdate();
     }
 
     finishedWithArgs(e, rid) {
@@ -99,7 +115,9 @@ export class KeywordArgsWindow extends React.Component {
                 <ul>
                     {args}
                 </ul>
-                <button type="button" onClick={this.props.newArgClicked}>Create new argument</button>
+                <button type="button" onClick={this.newArgClicked}>Create new argument</button>
+                <input id={NEW_ARG_NAME_ID} type="text" name="argName" placeholder="new arg name"/>
+                <input id={NEW_ARG_TYPE_ID} type="text" name="argType" placeholder="string"/>
                 <br />
                 <button type="button" onClick={this.finishedWithArgs}>Done</button>
             </div>
