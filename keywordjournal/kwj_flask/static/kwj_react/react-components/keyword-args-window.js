@@ -82,7 +82,7 @@ export class KeywordArgsWindow extends React.Component {
                     {keyword.args[i].name}
                     <input type="text" />
                 </li>
-            )
+            );
         }
 
         let style = {

@@ -24,6 +24,17 @@ export class KeyWordSelectionWindow extends React.Component {
 
       this.renderIfKeyword = this.renderIfKeyword.bind(this);
       this.keywordClicked = this.keywordClicked.bind(this);
+      this.newKeyword = this.newKeyword.bind(this);
+  }
+
+  newKeyword(keywordText) {
+      let newKeyword = {
+          keyword: keywordText,
+          args: [],
+          key: this.state.availableKeywords.length
+      };
+      this.state.availableKeywords.push(newKeyword);
+      this.forceUpdate();
   }
 
   keywordClicked(a, b, key) {
@@ -51,15 +62,24 @@ export class KeyWordSelectionWindow extends React.Component {
     console.log(raw_keywords);
     console.log(words);
 
+    let newKeywordButton;
     if (raw_keywords.includes(currentKeyWordText)) {
         console.log('TRRRRUUUUE');
-        var new_keyword_button = (
+        newKeywordButton = (
             <div></div>
         );
     }
     else {
-        var new_keyword_button = (
-            <button type="button">Create Keyword</button>
+        let callback = function(e, rid) {
+            this.newKeyword(currentKeyWordText);
+        }.bind(this);
+        newKeywordButton = (
+            <button
+                type="button"
+                onClick={callback}
+            >
+                Create Keyword
+            </button>
         );
     }
 
@@ -72,7 +92,7 @@ export class KeyWordSelectionWindow extends React.Component {
         <ul>
           {words}
         </ul>
-          {new_keyword_button}
+          {newKeywordButton}
       </div>
     );
 

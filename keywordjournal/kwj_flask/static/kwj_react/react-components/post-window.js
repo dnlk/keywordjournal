@@ -43,7 +43,7 @@ class BodyWindow extends React.Component {
       currentWord: '',
       clickedKeyword: undefined,
       matchingWords: [],
-      availableKeywords: [],
+      availableKeywords: getAvailableKeywords(),
       caretPos: {x: 0, y: 0},
       keywordArgs: undefined,
     });
@@ -164,7 +164,7 @@ class BodyWindow extends React.Component {
       <div className="bodyWindow">
         <TextEditor
           updateCurrentWord={this.updateCurrentWord}
-          updateCaretPos = {this.updateCaretPos}
+          updateCaretPos={this.updateCaretPos}
           registerSetKeywordInEditor = {this.registerSetKeywordInEditor}
         />
 
