@@ -31,6 +31,8 @@ export class TextEditor extends React.Component {
        }
     });
 
+    editor.removeListener('change', this.handleKeyStroke);
+
     editor.insertElement( dummyElement );
 
     // Alternate approach: http://ckeditor.com/forums/CKEditor-3.x/Cursor-coordinates-XY-SOLVED
@@ -43,10 +45,12 @@ export class TextEditor extends React.Component {
     dummyElement.remove();
 
     let currentWordAnalysis = analyzeCurrentWord(text, caretCursorPos);
-    console.log(currentWordAnalysis);
+    console.log('current word analysis:', currentWordAnalysis);
 
     this.props.updateCaretPos({x: xCaretPixelPos, y: yCaretPixelPos});
     this.props.updateCurrentWord(currentWordAnalysis);
+
+    editor.on('change', this.handleKeyStroke);
 
   }
 
@@ -73,11 +77,12 @@ export class TextEditor extends React.Component {
           this.document.on( 'mouseup', function(e) {
 
           } );
-          this.document.on( 'keyup', that.handleKeyStroke);
+          // this.document.on( 'change', that.handleKeyStroke);
         }
       }
     });
-
+    let editor = CKEDITOR.instances[TextBoxID];
+    editor.on('change', this.handleKeyStroke);
     this.props.registerSetKeywordInEditor(this.setKeyword);
   }
 
@@ -88,7 +93,6 @@ export class TextEditor extends React.Component {
         name="post_body"
         cols="100" rows="15"
         placeholder="Post body here"
-        onChange={this.handleKeyStroke}
       />
     )
   }

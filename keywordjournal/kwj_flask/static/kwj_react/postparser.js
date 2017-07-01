@@ -11,7 +11,7 @@ function getEnclosingWord(text, caretPos) {
     }
     startIdx -= 1;
     lastInspectedChar = text[startIdx];
-    if (lastInspectedChar === ' ' || lastInspectedChar === '\n') {
+    if (lastInspectedChar === ' ' || lastInspectedChar === String.fromCharCode(160) || lastInspectedChar === '\n') {
       startIdx += 1;
       break;
     }
@@ -25,7 +25,7 @@ function getEnclosingWord(text, caretPos) {
 
     lastInspectedChar = text[endIdx];
     endIdx += 1;
-    if (lastInspectedChar === ' ' || lastInspectedChar === '\n') {
+    if (lastInspectedChar === ' ' || lastInspectedChar === String.fromCharCode(160) || lastInspectedChar === '\n') {
       endIdx -= 1;
       break;
     }
