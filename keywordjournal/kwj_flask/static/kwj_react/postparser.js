@@ -1,9 +1,9 @@
 
 function getEnclosingWord(text, caretPos) {
-  var startIdx, endIdx;
+  let startIdx, endIdx;
   startIdx = endIdx = caretPos;
-  var lastInspectedChar = "";
-  var textLen = text.length;
+  let lastInspectedChar = "";
+  let textLen = text.length;
 
   while (true) {
     if (startIdx === 0) {
@@ -31,9 +31,9 @@ function getEnclosingWord(text, caretPos) {
     }
   }
 
-  var enclosingWord = text.slice(startIdx, endIdx);
+  let enclosingWord = text.slice(startIdx, endIdx);
 
-  var res = {
+  let res = {
     startIdx: startIdx,
     enclosingWord: enclosingWord
   };

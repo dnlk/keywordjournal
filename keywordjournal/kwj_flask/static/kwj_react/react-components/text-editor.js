@@ -12,13 +12,59 @@ export class TextEditor extends React.Component {
     super();
 
     this.handleKeyStroke = this.handleKeyStroke.bind(this);
+    this.key = this.key.bind(this);
   }
 
-  handleKeyStroke(e) {
+  key(e) {
+
+    if (e.data.keyCode === CKEDITOR.SHIFT || e.data.keyCode === CKEDITOR.CTRL || e.data.keyCode === CKEDITOR.ALT) {
+      e.cancel();
+      return;
+    }
+
     let editor = CKEDITOR.instances.postTextarea;
     let selection = editor.getSelection();
     let range = selection.getRanges()[0];
-    let text = range.startContainer.getText();
+
+    if (e.data.keyCode === CKEDITOR.SHIFT + 51) {  // shift + 3 (#)
+      let html_to_insert = '<span class="kwj-keyword-partial">#</span>';
+      editor.insertHtml(html_to_insert);
+      e.cancel();
+      return;
+    }
+
+    let parentNode = range.startContainer.getParent();
+    if (!parentNode.hasClass('kwj-keyword')) {
+      return;
+    }
+
+    if (range.startOffset === 0) {
+      range.moveToPosition(parentNode, CKEDITOR.POSITION_BEFORE_START);
+    }
+    else {
+      range.moveToPosition(parentNode, CKEDITOR.POSITION_AFTER_END);
+    }
+
+    range.select();
+  }
+
+  handleKeyStroke(e) {
+
+    let editor = CKEDITOR.instances.postTextarea;
+    let selection = editor.getSelection();
+    let range = selection.getRanges()[0];
+
+    if (!range.startContainer.getParent().hasClass('kwj-keyword-partial')) {
+      // This block will handle resetting currentWord when the kwj-keyword-partial span is deleted. The awkwardness
+      // is due to the way that keyup is double firing, once for the inner text container, and once for the
+      // kwj-keyword-partial span.
+      if (!(range.startContainer.hasClass === undefined) && !range.startContainer.hasClass('kwj-keyword-partial')) {
+        this.props.updateCurrentWord({});
+      }
+      return;
+    }
+
+    let text = range.startContainer.getParent().getText();
 
     let caretCursorPos = range.startOffset;
 
@@ -44,45 +90,55 @@ export class TextEditor extends React.Component {
 
     dummyElement.remove();
 
+    editor.on('change', this.handleKeyStroke);
+
     let currentWordAnalysis = analyzeCurrentWord(text, caretCursorPos);
-    console.log('current word analysis:', currentWordAnalysis);
+    currentWordAnalysis.range = range;
+
+    console.log('current word:', currentWordAnalysis);
 
     this.props.updateCaretPos({x: xCaretPixelPos, y: yCaretPixelPos});
     this.props.updateCurrentWord(currentWordAnalysis);
 
-    editor.on('change', this.handleKeyStroke);
+
 
   }
 
-  setKeyword(keyword, args) {
-    console.log('SET KEYWORD!!!!');
-    console.log(keyword);
-    console.log(args);
+  setKeyword(currentKeyword, clickedKeyword, args) {
+    let parentNode = currentKeyword.range.startContainer.getParent();
+    parentNode.removeClass('kwj-keyword-partial');
+    parentNode.addClass('kwj-keyword');
 
     let json_args = JSON.stringify(args);
-    let html_to_insert = '<span class="kwj-keyword" kwj-args="' + json_args + '">' + keyword.keyword + '</span>';
-
-    let editor = CKEDITOR.instances.postTextarea;
-    editor.insertHtml(html_to_insert);
+    parentNode.setAttributes({
+      'kwj-args': json_args
+    });
+    parentNode.setText(clickedKeyword.keyword);
   }
 
   componentDidMount(e) {
     let that = this;
-    CKEDITOR.replace(TextBoxID, {
+    let css = `
+      .kwj-keyword {
+        border: 1px solid blue;
+      }
+      .kwj-keyword-partial {
+        border: 1px solid red;
+      }
+    `;
+    CKEDITOR.addCss(css);
+
+    let editor = CKEDITOR.replace(TextBoxID, {
       allowedContent: true,
-      // extraPlugins: 'stylesheetparser',
-      // contentsCss:'static/css/globalstyles.css',
       on: {
         contentDom: function() {
-          this.document.on( 'mouseup', function(e) {
-
-          } );
-          // this.document.on( 'change', that.handleKeyStroke);
+          this.document.on( 'keyup', that.handleKeyStroke);
         }
       }
     });
-    let editor = CKEDITOR.instances[TextBoxID];
-    editor.on('change', this.handleKeyStroke);
+
+    editor.on('key', this.key);
+
     this.props.registerSetKeywordInEditor(this.setKeyword);
   }
 

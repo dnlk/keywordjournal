@@ -96,7 +96,7 @@ class BodyWindow extends React.Component {
   }
 
   finishedWithArgs(args) {
-    this.setKeywordInEditor(this.state.clickedKeyword, args);
+    this.setKeywordInEditor(this.state.currentWord, this.state.clickedKeyword, args);
     this.setState({
       clickedKeyword: undefined,
       currentWord: '',

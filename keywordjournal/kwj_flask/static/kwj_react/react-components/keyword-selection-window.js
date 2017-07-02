@@ -38,7 +38,7 @@ export class KeyWordSelectionWindow extends React.Component {
   }
 
   keywordClicked(a, b, key) {
-    let clickedKeyword = this.state.availableKeywords[key];
+    let clickedKeyword = this.state.availableKeywords.find(keyword => keyword.key.toString() === key);
     this.props.keywordClicked(a, b, clickedKeyword);
   }
 
