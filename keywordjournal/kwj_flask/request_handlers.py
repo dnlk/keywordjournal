@@ -111,3 +111,24 @@ def new_keyword():
         return 'User keyword `{}` already exists'.format(word), 400
     else:
         return '', 200
+
+
+@app.route('/api/new_keyword_args', methods=['POST'])
+def new_keyword_args():
+    user_id = flask.session['user_id']
+
+    arg_name = request.json['name']
+    arg_type = request.json['type']
+    keyword = request.json['keyword']
+
+    keyword_arg = resources.user_keyword_arg.create(
+        user_id=user_id,
+        keyword=keyword,
+        arg_name=arg_name,
+        arg_type=arg_type
+    )
+
+    if keyword_arg is None:
+        return 'Argument {} for keyword {} already exists'.format(arg_name, keyword), 400
+    else:
+        return '', 200

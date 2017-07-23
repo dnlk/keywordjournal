@@ -44,7 +44,7 @@ export class KeyWordSelectionWindow extends React.Component {
         success: function() {
             this.state.availableKeywords.push(newKeyword);
             this.forceUpdate();
-        }
+        }.bind(this)
       });
   }
 

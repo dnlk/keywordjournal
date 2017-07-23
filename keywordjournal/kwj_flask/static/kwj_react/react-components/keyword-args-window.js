@@ -22,13 +22,28 @@ export class KeywordArgsWindow extends React.Component {
     newArgClicked(e, rid) {
         let newArgNameInput = document.getElementById(NEW_ARG_NAME_ID);
         let newArgTypeInput = document.getElementById(NEW_ARG_TYPE_ID);
+        let argName = newArgNameInput.value;
+        let argType = newArgTypeInput.value;
+        let keyword = this.props.keyword.keyword;
 
-        this.props.keyword.args.push({
-            name: newArgNameInput.value,
-            type: newArgTypeInput.value || "string",
+        $.ajax({
+          url: '/api/new_keyword_args',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({
+              name: argName,
+              type: argType,
+              keyword: keyword,
+          }),
+          success: function() {
+            this.props.keyword.args.push({
+              name: argName,
+              type: argType || "string",
+              keyword: keyword,
+            });
+            this.forceUpdate();
+          }.bind(this)
         });
-
-        this.forceUpdate();
     }
 
     finishedWithArgs(e, rid) {
@@ -49,6 +64,8 @@ export class KeywordArgsWindow extends React.Component {
           $li.textContent = '';
           $li.find('input').val('');
         }
+
+
 
         this.props.finishedWithArgs(args);
 

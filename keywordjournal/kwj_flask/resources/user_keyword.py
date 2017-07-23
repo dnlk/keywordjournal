@@ -12,9 +12,10 @@ from keywordjournal.models.db import UserArg
 from keywordjournal.kwj_flask import resources
 
 
-def get(keyword, user):
-    res = manager.proxy_session.query(UserKeyword).filter_by(keyword_id=keyword.id, user_id=user.id).first()
-    return res
+def get(user_id, keyword):
+    keyword_res = resources.keyword.get(keyword)
+    user_keyword_res = manager.proxy_session.query(UserKeyword).filter_by(keyword_id=keyword_res.id, user_id=user_id).first()
+    return user_keyword_res
 
 
 def get_all_keywords_with_args(user_id):
