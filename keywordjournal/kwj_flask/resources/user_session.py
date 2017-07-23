@@ -10,7 +10,7 @@ from keywordjournal.kwj_flask.connection import manager
 from keywordjournal.kwj_flask import authentication
 from keywordjournal.kwj_flask import security
 
-from keywordjournal.kwj_flask.models.db import UserSession
+from keywordjournal.models.db import UserSession
 
 
 def get_by_user_id(user_id):

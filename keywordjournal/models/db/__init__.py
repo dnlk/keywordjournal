@@ -12,7 +12,7 @@ class Keyword(Base):
     __tablename__ = 'keyword'
 
     id = sa.Column(sa.Integer, primary_key=True)
-    word = sa.Column(sa.String)
+    word = sa.Column(sa.String, unique=True)
 
     user_keywords = sa_orm.relationship('UserKeyword', back_populates='keyword')
 
@@ -21,7 +21,7 @@ class User(Base):
     __tablename__ = 'user'
 
     id = sa.Column(sa.Integer, primary_key=True)
-    email = sa.Column(sa.String)
+    email = sa.Column(sa.String, unique=True)
     password = sa.Column(sa.String)
 
     user_keywords = sa_orm.relationship('UserKeyword', back_populates='user')
@@ -41,6 +41,10 @@ class UserKeyword(Base):
     user_args = sa_orm.relationship('UserArg', back_populates='user_keyword')
     posted_keywords = sa_orm.relationship('PostedKeyword', back_populates='user_keyword')
 
+    __table_args__ = (
+        sa.UniqueConstraint('keyword_id', 'user_id', name='user_keyword'),
+    )
+
 
 class UserArg(Base):
     __tablename__ = 'user_arg'
@@ -51,6 +55,10 @@ class UserArg(Base):
 
     user_keyword = sa_orm.relationship('UserKeyword', back_populates='user_args')
     posted_args = sa_orm.relationship('PostedArg', back_populates='user_arg')
+
+    __table_args__ = (
+        sa.UniqueConstraint('user_keyword_id', 'param_name', name='keyword_arg'),
+    )
 
 
 class Post(Base):

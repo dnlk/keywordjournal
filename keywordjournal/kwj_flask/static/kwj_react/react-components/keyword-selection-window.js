@@ -29,10 +29,20 @@ export class KeyWordSelectionWindow extends React.Component {
 
   newKeyword(keywordText) {
       let newKeyword = {
-          keyword: keywordText,
-          args: [],
-          key: this.state.availableKeywords.length
+        keyword: keywordText,
+        args: [],
+        key: this.state.availableKeywords.length
       };
+
+      $.ajax({
+        url: '/api/new_keyword',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            keyword: keywordText,
+        }),
+      });
+
       this.state.availableKeywords.push(newKeyword);
       this.forceUpdate();
   }

@@ -9,7 +9,7 @@ from keywordjournal.kwj_flask import authentication as auth
 from keywordjournal.kwj_flask.resources import post as post_resource
 from keywordjournal.kwj_flask.resources import user_keyword as user_keyword_resource
 from keywordjournal.kwj_flask.resources import user_keyword_arg as user_keyword_arg_resource
-# from keywordjournal.kwj_flask.resources import tags_and_args as tags_and_args_resource
+from keywordjournal.kwj_flask import resources
 
 
 @app.route('/', methods=['GET'])
@@ -97,3 +97,17 @@ def new_arg():
     user_keyword_arg_resource.create(user_id, keyword, arg['name'], arg['type'])
 
     return '', 200
+
+
+@app.route('/api/new_keyword', methods=['POST'])
+def new_keyword():
+    user_id = flask.session['user_id']
+
+    word = request.json['keyword']
+
+    res = resources.user_keyword.create(word, user_id)
+
+    if res is None:
+        return 'User keyword `{}` already exists'.format(word), 400
+    else:
+        return '', 200
