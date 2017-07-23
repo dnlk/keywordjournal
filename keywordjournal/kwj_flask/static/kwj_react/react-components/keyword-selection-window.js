@@ -41,10 +41,11 @@ export class KeyWordSelectionWindow extends React.Component {
         data: JSON.stringify({
             keyword: keywordText,
         }),
+        success: function() {
+            this.state.availableKeywords.push(newKeyword);
+            this.forceUpdate();
+        }
       });
-
-      this.state.availableKeywords.push(newKeyword);
-      this.forceUpdate();
   }
 
   keywordClicked(a, b, key) {
