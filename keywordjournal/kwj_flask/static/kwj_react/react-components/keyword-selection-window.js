@@ -18,10 +18,6 @@ export class KeyWordSelectionWindow extends React.Component {
 
       super();
 
-      this.state = {
-          availableKeywords: getAvailableKeywords()
-      };
-
       this.renderIfKeyword = this.renderIfKeyword.bind(this);
       this.keywordClicked = this.keywordClicked.bind(this);
       this.newKeyword = this.newKeyword.bind(this);
@@ -31,7 +27,7 @@ export class KeyWordSelectionWindow extends React.Component {
       let newKeyword = {
         keyword: keywordText,
         args: [],
-        key: this.state.availableKeywords.length
+        key: this.props.availableKeywords.length
       };
 
       $.ajax({
@@ -42,14 +38,14 @@ export class KeyWordSelectionWindow extends React.Component {
             keyword: keywordText,
         }),
         success: function() {
-            this.state.availableKeywords.push(newKeyword);
+            this.props.availableKeywords.push(newKeyword);
             this.forceUpdate();
         }.bind(this)
       });
   }
 
   keywordClicked(a, b, key) {
-    let clickedKeyword = this.state.availableKeywords.find(keyword => keyword.key.toString() === key);
+    let clickedKeyword = this.props.availableKeywords.find(keyword => keyword.key.toString() === key);
     this.props.keywordClicked(a, b, clickedKeyword);
   }
 
@@ -57,7 +53,7 @@ export class KeyWordSelectionWindow extends React.Component {
 
     let currentWord = this.props.currentWord;
     let currentKeyWordText = currentWord.enclosingWord.slice(1);
-    let matchingKeywords = getMatchingKeywords(currentKeyWordText, this.state.availableKeywords);
+    let matchingKeywords = getMatchingKeywords(currentKeyWordText, this.props.availableKeywords);
 
     let words = [];
     let raw_keywords = [];

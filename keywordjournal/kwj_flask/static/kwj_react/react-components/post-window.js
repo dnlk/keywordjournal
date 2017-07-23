@@ -38,15 +38,28 @@ class HeaderWindow extends React.Component {
 class BodyWindow extends React.Component {
   constructor(props) {
     super(props);
+
+
+
     this.state = ({
       bodyText: '',
       currentWord: '',
       clickedKeyword: undefined,
       matchingWords: [],
-      availableKeywords: getAvailableKeywords(),
+      availableKeywords: [],
       caretPos: {x: 0, y: 0},
       keywordArgs: undefined,
     });
+
+    $.ajax({
+      url: '/api/tags_and_args',
+      method: 'GET',
+      dataType: 'json',
+      success: function(json_data, status, jqXHR) {
+        this.setState({availableKeywords: json_data})
+      }.bind(this),
+    });
+
     var that = this;
     $.ajax({
       url: '/api/tags_and_args',
@@ -172,6 +185,7 @@ class BodyWindow extends React.Component {
           currentWord={this.state.currentWord}
           caretPos={this.state.caretPos}
           keywordClicked={this.keywordClicked}
+          availableKeywords={this.state.availableKeywords}
         />
         <KeywordArgsWindow
            keyword={this.state.clickedKeyword}
