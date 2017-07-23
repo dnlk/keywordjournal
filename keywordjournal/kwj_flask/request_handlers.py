@@ -1,6 +1,8 @@
 # Author: Daniel Kinney
 # All rights reserved
 
+import re
+
 import flask
 from flask import request
 
@@ -51,16 +53,35 @@ def user_session():
         pass
 
 
+def _parse_post_text(raw_text):
+    # TODO - dear god
+    nasty_regex = r'\<span.*?kwj-args="(.*?)".*?\>(.*?)\</span'
+    res = {y: eval(x.replace('&quot;', '"')) for x, y in re.findall(nasty_regex, raw_text)}
+    return res
+
+
 @app.route('/api/post', methods=['POST', 'DELETE'])
 def post():
     '''
     POST: Create new post
     '''
     if request.method == 'POST':
-        post_body = request.form['post_body']
-        post_title = request.form['post_title']
         user_id = flask.session['user_id']
-        post_resource.create(user_id, post_title, post_body)
+        post_body = request.form['post_body']
+
+        posted_keywords = _parse_post_text(post_body)
+
+        post_title = request.form['post_title']
+        post_res = post_resource.create(user_id, post_title, post_body)
+
+        for keyword, args in posted_keywords.items():
+            resources.user_keyword_posted.create(
+                user_id=user_id,
+                post_id=post_res.id,
+                keyword=keyword,
+                args=args
+            )
+
         return flask.redirect(flask.url_for('root'))
 
 

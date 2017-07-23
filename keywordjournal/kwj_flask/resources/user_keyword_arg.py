@@ -20,6 +20,14 @@ from keywordjournal.models.db import UserArg, UserKeyword, Keyword
 from keywordjournal.kwj_flask import resources
 
 
+def get(user_keyword_id, param_name):
+    res = manager.proxy_session.query(UserArg).filter_by(
+        user_keyword_id=user_keyword_id,
+        param_name=param_name,
+    ).first()
+    return res
+
+
 def create(user_id, keyword, arg_name, arg_type):
     # TODO - need to implement the arg type
 

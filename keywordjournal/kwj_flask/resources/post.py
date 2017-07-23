@@ -70,6 +70,8 @@ def create(user_id, post_title, post_body):
     db.add(post)
     db.commit()
 
+    return post
+
 
 def get_all(user_id):
     user = user_resource.get_by_id(user_id)
