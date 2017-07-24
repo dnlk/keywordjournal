@@ -18,7 +18,7 @@ export class PostWindow extends React.Component {
         <BodyWindow />
         <br />
         <SubmitPost />
-        <p>Hello World!</p>
+        <h3>Previous Posts</h3>
       </form>
     );
   }
@@ -191,9 +191,6 @@ class BodyWindow extends React.Component {
            keyword={this.state.clickedKeyword}
            newArgClicked={this.newArgClicked}
            finishedWithArgs={this.finishedWithArgs}
-        />
-        <NewArg
-          newArgSubmit={this.newArgSubmit}
         />
       </div>
     );
