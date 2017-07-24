@@ -56,23 +56,23 @@ class BodyWindow extends React.Component {
       method: 'GET',
       dataType: 'json',
       success: function(json_data, status, jqXHR) {
-        this.setState({availableKeywords: json_data})
+        this.setState({availableKeywords: json_data.data})
       }.bind(this),
     });
 
-    var that = this;
-    $.ajax({
-      url: '/api/tags_and_args',
-      method: 'GET',
-      dataType: 'json',
-      success: function(data, status, jqXHR) {
-        that.setState({availableKeywords: data.data})
-      },
-      error: function(jqXHR, status, error) {
-        var x = 0;
-      }
-
-    });
+    // var that = this;
+    // $.ajax({
+    //   url: '/api/tags_and_args',
+    //   method: 'GET',
+    //   dataType: 'json',
+    //   success: function(data, status, jqXHR) {
+    //     that.setState({availableKeywords: data.data})
+    //   },
+    //   error: function(jqXHR, status, error) {
+    //     var x = 0;
+    //   }
+    //
+    // });
 
     this.setKeywordInEditor = undefined;
 
@@ -191,6 +191,7 @@ class BodyWindow extends React.Component {
            keyword={this.state.clickedKeyword}
            newArgClicked={this.newArgClicked}
            finishedWithArgs={this.finishedWithArgs}
+           availableKeywords={this.state.availableKeywords}
         />
       </div>
     );

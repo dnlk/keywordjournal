@@ -99,7 +99,7 @@ def tags_and_args():
                 'key': i,
                 'keyword': user_kw.keyword.word,
                 'args': [
-                    {'name': arg.param_name, 'type': 'string'}
+                    {'name': arg.param_name, 'type': arg.param_type}
                     for arg in user_kw.user_args
                 ]
             }
@@ -139,7 +139,7 @@ def new_keyword_args():
     user_id = flask.session['user_id']
 
     arg_name = request.json['name']
-    arg_type = request.json['type']
+    arg_type = request.json['type'] or 'string'
     keyword = request.json['keyword']
 
     keyword_arg = resources.user_keyword_arg.create(

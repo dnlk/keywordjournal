@@ -50,50 +50,41 @@ export class KeywordArgsWindow extends React.Component {
         var $parent = $(e.currentTarget).parent();
         var $lis = $parent.find('li');
 
-        // var args = [];
-
         let args = {};
 
         for (var i = 0; i < $lis.length; i++) {
           let $li = $($lis[i]);
           let name = $li.text();
           let value = $li.find('input').val();
+          let keywordType = $li.find('input').attr('placeholder');
+
+          // See https://stackoverflow.com/questions/12467542/how-can-i-check-if-a-string-is-a-float for source
+          // of regex
+          if (keywordType === 'int') {
+            let intRegex = /^-?\d+$/;
+            if (!intRegex.test(value) && value != '') {
+              alert('Bad type!');
+              return;
+            }
+          }
+          if (keywordType === 'float') {
+            let floatRegex = /^-?\d+(?:[.,]\d*?)?$/;
+            if (!floatRegex.test(value) && value != '') {
+                alert('Bad type!');
+                return;
+            }
+          }
 
           args[name] = value;
 
           $li.textContent = '';
           $li.find('input').val('');
+
+
         }
-
-
 
         this.props.finishedWithArgs(args);
 
-        // var jsonArgs = JSON.stringify(args);
-        //
-        // var currentWord = this.state.currentWord;
-        // var caretCursorPos = this.state.caretCursorPos;
-        // var currentText = this.state.bodyText;
-        // var clickedKeyword = this.state.clickedKeyword;
-        //
-        // console.log('currentWord', currentWord);
-        // console.log('caretCursorPos', caretCursorPos);
-        // console.log('currentText', currentText);
-        // console.log('clickedKeyword', clickedKeyword);
-        //
-        // var newText = currentText.substring(0, caretCursorPos - currentWord.length + 1) +
-        //     clickedKeyword.keyword + '<' + jsonArgs + '>' +
-        //     currentText.substring(caretCursorPos);
-        //
-        // this.setState({
-        //   bodyText: newText,
-        // });
-        //
-        // $('#postTextarea').val(newText);
-        //
-        // document.getElementById("keywordArgsWindow").style.visibility = 'hidden';
-        // document.getElementById("keywordArgsWindow").style.visibility = 'hidden';
-        // $('#postTextarea').focus();
     }
 
     renderIfNotKeywordClicked() {
@@ -113,7 +104,7 @@ export class KeywordArgsWindow extends React.Component {
             args.push(
                 <li key={key}>
                     {keyword.args[i].name}
-                    <input type="text" />
+                    <input type="text" placeholder={keyword.args[i].type}/>
                 </li>
             );
         }

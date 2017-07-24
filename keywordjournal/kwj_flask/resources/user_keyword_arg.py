@@ -20,6 +20,13 @@ from keywordjournal.models.db import UserArg, UserKeyword, Keyword
 from keywordjournal.kwj_flask import resources
 
 
+KEYWORD_TYPES = {
+    'string': str,
+    'int': int,
+    'float': float,
+}
+
+
 def get(user_keyword_id, param_name):
     res = manager.proxy_session.query(UserArg).filter_by(
         user_keyword_id=user_keyword_id,
@@ -29,11 +36,13 @@ def get(user_keyword_id, param_name):
 
 
 def create(user_id, keyword, arg_name, arg_type):
-    # TODO - need to implement the arg type
+
+    if arg_type not in KEYWORD_TYPES:
+        return None
 
     user_keyword = resources.user_keyword.get(user_id=user_id, keyword=keyword)
 
-    new_arg = UserArg(user_keyword_id=user_keyword.id, param_name=arg_name)
+    new_arg = UserArg(user_keyword_id=user_keyword.id, param_name=arg_name, param_type=arg_type)
 
     try:
         manager.proxy_session.add(new_arg)

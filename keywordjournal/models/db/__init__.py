@@ -52,6 +52,7 @@ class UserArg(Base):
     id = sa.Column(sa.Integer, primary_key=True)
     user_keyword_id = sa.Column(sa.Integer, sa.ForeignKey('user_keyword.id'))
     param_name = sa.Column(sa.String)
+    param_type = sa.Column(sa.String)
 
     user_keyword = sa_orm.relationship('UserKeyword', back_populates='user_args')
     posted_args = sa_orm.relationship('PostedArg', back_populates='user_arg')
