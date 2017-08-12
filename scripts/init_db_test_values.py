@@ -34,7 +34,7 @@ user2 = User(
 )
 
 
-if __name__ == '__main__':
+def init():
     try:
         path = os.path.dirname(consts.KEYWORDJOURNAL_DB_PATH)
         os.mkdir(path)
@@ -45,3 +45,7 @@ if __name__ == '__main__':
     db.add(user1)
     db.add(user2)
     db.commit()
+
+
+if __name__ == '__main__':
+    init()
