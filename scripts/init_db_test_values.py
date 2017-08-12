@@ -1,8 +1,10 @@
 # Author: Daniel Kinney
 # All rights reserved
 
+import os
 
 from keywordjournal.kwj_flask.connection.manager import db, engine
+from keywordjournal.kwj_flask import consts
 
 from keywordjournal.models.db import *
 
@@ -33,6 +35,12 @@ user2 = User(
 
 
 if __name__ == '__main__':
+    try:
+        path = os.path.dirname(consts.KEYWORDJOURNAL_DB_PATH)
+        os.mkdir(path)
+    except OSError:
+        pass
+
     Base.metadata.create_all(bind=engine)
     db.add(user1)
     db.add(user2)
