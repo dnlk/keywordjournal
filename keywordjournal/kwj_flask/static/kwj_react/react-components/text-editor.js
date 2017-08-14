@@ -17,8 +17,8 @@ export class TextEditor extends React.Component {
 
   key(e) {
 
-    if (e.data.keyCode === CKEDITOR.SHIFT || e.data.keyCode === CKEDITOR.CTRL || e.data.keyCode === CKEDITOR.ALT) {
-      e.cancel();
+    if (e.key === 'Shift' || e.key === 'Control' || e.key === 'Alt') {
+      e.preventDefault();
       return;
     }
 
@@ -26,10 +26,10 @@ export class TextEditor extends React.Component {
     let selection = editor.getSelection();
     let range = selection.getRanges()[0];
 
-    if (e.data.keyCode === CKEDITOR.SHIFT + 51) {  // shift + 3 (#)
+    if (e.key === '#') {
       let html_to_insert = '<span class="kwj-keyword-partial">#</span>';
       editor.insertHtml(html_to_insert);
-      e.cancel();
+      e.preventDefault();
       return;
     }
 
@@ -132,12 +132,12 @@ export class TextEditor extends React.Component {
       allowedContent: true,
       on: {
         contentDom: function() {
-          this.document.on( 'keyup', that.handleKeyStroke);
+          this.document.$.addEventListener( 'keydown', that.key);
         }
       }
     });
 
-    editor.on('key', this.key);
+    editor.on('change', this.handleKeyStroke);
 
     this.props.registerSetKeywordInEditor(this.setKeyword);
   }
