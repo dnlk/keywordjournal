@@ -13,6 +13,7 @@ export class TextEditor extends React.Component {
 
     this.handleKeyStroke = this.handleKeyStroke.bind(this);
     this.key = this.key.bind(this);
+    this.createPartialKeyword = this.createPartialKeyword.bind(this);
   }
 
   key(e) {
@@ -25,13 +26,6 @@ export class TextEditor extends React.Component {
     let editor = CKEDITOR.instances.postTextarea;
     let selection = editor.getSelection();
     let range = selection.getRanges()[0];
-
-    if (e.key === '#') {
-      let html_to_insert = '<span class="kwj-keyword-partial">#</span>';
-      editor.insertHtml(html_to_insert);
-      e.preventDefault();
-      return;
-    }
 
     let parentNode = range.startContainer.getParent();
     if (!parentNode.hasClass('kwj-keyword')) {
@@ -48,23 +42,66 @@ export class TextEditor extends React.Component {
     range.select();
   }
 
+  createPartialKeyword(range) {
+
+    let editor = CKEDITOR.instances.postTextarea;
+    let parentNode = range.startContainer.getParent();
+    let text = parentNode.getText();
+    parentNode.setText('');
+
+    let startText = text.slice(0, range.startOffset - 1);
+    let endText = text.slice(range.startOffset);
+
+    editor.insertText(startText);
+
+    // parentNode.setText(text.slice(0, -1));  // All but last char
+    let html_to_insert = '<span class="kwj-keyword-partial">#</span>';
+    editor.insertHtml(html_to_insert);
+
+    if (endText.length > 0) {
+      range.moveToPosition(parentNode, CKEDITOR.POSITION_BEFORE_END);
+      range.select();
+
+      editor.insertText(endText);
+    }
+  }
+
   handleKeyStroke(e) {
 
     let editor = CKEDITOR.instances.postTextarea;
     let selection = editor.getSelection();
     let range = selection.getRanges()[0];
 
-    if (!range.startContainer.getParent().hasClass('kwj-keyword-partial')) {
+    let parentNode = range.startContainer.getParent();
+
+    let text = parentNode.getText();
+
+
+    if (!parentNode.hasClass('kwj-keyword-partial')) {
       // This block will handle resetting currentWord when the kwj-keyword-partial span is deleted. The awkwardness
       // is due to the way that keyup is double firing, once for the inner text container, and once for the
       // kwj-keyword-partial span.
       if (!(range.startContainer.hasClass === undefined) && !range.startContainer.hasClass('kwj-keyword-partial')) {
         this.props.updateCurrentWord({});
+
+        return;
       }
-      return;
+
+      if (range.startContainer.hasClass === undefined) {
+
+        this.props.updateCurrentWord({});
+
+        if (text.length > 0 && text[range.startOffset - 1] === '#') {  // Last char in text
+          this.createPartialKeyword(range);
+        }
+
+        return;
+      }
+
     }
 
-    let text = range.startContainer.getParent().getText();
+
+
 
     let caretCursorPos = range.startOffset;
 
@@ -99,8 +136,6 @@ export class TextEditor extends React.Component {
 
     this.props.updateCaretPos({x: xCaretPixelPos, y: yCaretPixelPos});
     this.props.updateCurrentWord(currentWordAnalysis);
-
-
 
   }
 
