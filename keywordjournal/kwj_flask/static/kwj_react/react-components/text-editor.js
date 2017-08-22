@@ -14,6 +14,7 @@ export class TextEditor extends React.Component {
     this.handleKeyStroke = this.handleKeyStroke.bind(this);
     this.key = this.key.bind(this);
     this.createPartialKeyword = this.createPartialKeyword.bind(this);
+    this.setKeyword = this.setKeyword.bind(this);
   }
 
   key(e) {
@@ -148,7 +149,15 @@ export class TextEditor extends React.Component {
     parentNode.setAttributes({
       'kwj-args': json_args
     });
+
     parentNode.setText(clickedKeyword.keyword);
+
+    let editor = CKEDITOR.instances.postTextarea;
+    let selection = editor.getSelection();
+    let range = selection.getRanges()[0];
+    range.moveToPosition(parentNode, CKEDITOR.POSITION_AFTER_END);
+    range.select();
+    editor.insertText(' ');
   }
 
   componentDidMount(e) {
