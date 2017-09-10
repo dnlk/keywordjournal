@@ -96,15 +96,17 @@ export class KeywordArgsWindow extends React.Component {
     renderIfKeywordClicked() {
         let keyword = this.props.keyword || {};
         let keywordArgs = keyword.args || [];
+        let defaultArgValues = this.props.defaultArgValues || {};
 
         let args = [];
 
         for (var i in keywordArgs) {
             let key = i.toString();
+            let defaultValue = defaultArgValues[keywordArgs[i].name] || '';
             args.push(
                 <li key={key}>
                     {keyword.args[i].name}
-                    <input type="text" placeholder={keyword.args[i].type}/>
+                    <input type="text" placeholder={keyword.args[i].type} defaultValue={defaultValue} />
                 </li>
             );
         }

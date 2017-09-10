@@ -10,7 +10,7 @@ function makeKeyword(i, keyword, that) {
     )
 }
 
-function makeEnteredKeyword(keyword) {
+function makeEnteredKeyword(keyword, index, onClickCallback) {
   let args = keyword.args;
   let argsDisplayList = [];
   if (("") in args) {
@@ -26,7 +26,7 @@ function makeEnteredKeyword(keyword) {
   let argsDisplay =  keyword.keyword + ' - ' + argsDisplayList.join(' , ');
 
   return (
-    <li>
+    <li onClick={_ => onClickCallback(index)}>
       {argsDisplay}
     </li>
   )
@@ -36,8 +36,8 @@ function makeEnteredKeyword(keyword) {
 export class EnteredKeywords extends React.Component {
 
   render() {
-
-    let enteredKeywords = this.props.enteredKeywords.map(makeEnteredKeyword);
+    let cb = this.props.enteredKeywordClicked;
+    let enteredKeywords = this.props.enteredKeywords.map((kw, i) => makeEnteredKeyword(kw, i, cb));
 
     return (
       <div>

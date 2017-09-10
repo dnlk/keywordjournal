@@ -30,6 +30,8 @@ export class PostWindow extends React.Component {
     this.keywordSelected = this.keywordSelected.bind(this);
     this.createKeyword = this.createKeyword.bind(this);
     this.finishedWithArgs = this.finishedWithArgs.bind(this);
+    this.finishedWithEditingArgs = this.finishedWithEditingArgs.bind(this);
+    this.keywordReSelected = this.keywordReSelected.bind(this);
 
   }
 
@@ -60,6 +62,16 @@ export class PostWindow extends React.Component {
     });
   }
 
+  keywordReSelected(index) {
+    let enteredKeyword = this.state.enteredKeywords[index];
+    let keyword = this.state.availableKeywords.find(kw => kw.keyword === enteredKeyword.keyword);
+    this.setState({
+      clickedKeywordEntered: keyword,
+      clickedKeywordEnteredEntry: enteredKeyword,
+      clickedKeywordEnteredArgs: enteredKeyword.args,
+    })
+  }
+
   finishedWithArgs(args) {
     let keyword = this.state.clickedKeyword.keyword;
     let enteredKeywords = this.state.enteredKeywords;
@@ -70,12 +82,23 @@ export class PostWindow extends React.Component {
     });
   }
 
+  finishedWithEditingArgs(args) {
+    let keywordEnteredEntry = this.state.clickedKeywordEnteredEntry;
+    keywordEnteredEntry.args = args;
+    this.setState({
+      clickedKeywordEntered: undefined,
+      clickedKeywordEnteredArgs: undefined,
+      clickedKeywordEnteredEntry: undefined,
+    });
+  }
+
   render() {
     let enteredKeywordsJson = JSON.stringify(this.state.enteredKeywords);
     return (
       <form method="post" action="api/post" className="postWindow">
         <EnteredKeywords
           enteredKeywords={this.state.enteredKeywords}
+          enteredKeywordClicked={this.keywordReSelected}
         />
         <input type="hidden" id="entered-keywords-json" name="entered_keywords" value={enteredKeywordsJson}/>
         <br />
@@ -87,6 +110,11 @@ export class PostWindow extends React.Component {
         <KeywordArgsWindow
            keyword={this.state.clickedKeyword}
            finishedWithArgs={this.finishedWithArgs}
+        />
+        <KeywordArgsWindow
+           keyword={this.state.clickedKeywordEntered}
+           defaultArgValues={this.state.clickedKeywordEnteredArgs}
+           finishedWithArgs={this.finishedWithEditingArgs}
         />
         <br />
         <HeaderWindow />
