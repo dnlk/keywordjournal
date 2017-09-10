@@ -23,7 +23,7 @@ def root():
          to enter a post and submit. Also show previous posts.
     '''
     user_id = flask.session['user_id']
-    previous_posts = post_resource.get_all(user_id)
+    previous_posts = reversed(post_resource.get_all(user_id))
     return flask.render_template('create_post.jinja2',
                                  email=flask.session['email'],
                                  previous_posts=previous_posts)

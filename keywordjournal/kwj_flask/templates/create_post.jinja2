@@ -11,6 +11,9 @@
 </script>
 
 {% for post in previous_posts %}
+{% for keyword in post.keywords %}
+<p>{{keyword.name}} - {% for arg_name, arg_value in keyword.args.items() %} {{arg_name}} : {{arg_value}}, {% endfor %}</p>
+{% endfor %}
 <h4>{{post.post_title}}</h4>
 <p>{{post.post_body}}</p>
 <p>{{post.datetime}}</p>

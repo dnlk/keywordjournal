@@ -76,7 +76,22 @@ def create(user_id, post_title, post_body):
 def get_all(user_id):
     user = user_resource.get_by_id(user_id)
     posts = user.posts
-    return [{'post_title': p.header, 'post_body': p.text, 'datetime': p.datetime} for p in posts]
+    return [
+        {
+            'post_title': p.header,
+            'post_body': p.text,
+            'datetime': p.datetime,
+            'keywords': [
+                {
+                    'name': posted_keyword.user_keyword.keyword.word,
+                    'args': {
+                        posted_arg.user_arg.param_name: posted_arg.param_value
+                        for posted_arg in posted_keyword.posted_args
+                    }
+                } for posted_keyword in p.posted_keywords
+            ]
+        } for p in posts
+    ]
 
 
 # def persist_tags_with_args(tags_with_args, post):
