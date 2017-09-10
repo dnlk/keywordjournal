@@ -1,18 +1,94 @@
 import React from "react";
-import jQuery from "jquery";
+import jQuery from "jquery";  // This is needed. Maybe for the text editor (CKEDITOR)
 
-import "textarea-helper";
-
-import {KeyWordSelectionWindow} from "react-components/keyword-selection-window.js";
 import {analyzeCurrentWord} from "postparser.js";
 import {getMatchingKeywords, getAvailableKeywords} from "keyword.js";
 import {KeywordArgsWindow, NewArg} from "react-components/keyword-args-window";
 import {TextEditor} from "react-components/text-editor.js";
+import {EnteredKeywords, SelectKeyword} from "react-components/entered-keywords-window.js";
 
 export class PostWindow extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      enteredKeywords: [],
+      availableKeywords: [],
+      clickedKeyword: undefined,
+      currentWord: undefined,
+    };
+
+    $.ajax({
+      url: '/api/tags_and_args',
+      method: 'GET',
+      dataType: 'json',
+      success: function(json_data, status, jqXHR) {
+        this.setState({availableKeywords: json_data.data})
+      }.bind(this),
+    });
+
+    this.keywordSelected = this.keywordSelected.bind(this);
+    this.createKeyword = this.createKeyword.bind(this);
+    this.finishedWithArgs = this.finishedWithArgs.bind(this);
+
+  }
+
+  createKeyword(keywordText) {
+    let newKeyword = {
+      keyword: keywordText,
+      args: [],
+      key: this.state.availableKeywords.length
+    };
+
+    $.ajax({
+      url: '/api/new_keyword',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+          keyword: keywordText,
+      }),
+      success: function() {
+          this.state.availableKeywords.push(newKeyword);
+          this.forceUpdate();
+      }.bind(this)
+    });
+  }
+
+  keywordSelected(keyWord) {
+    this.setState({
+      clickedKeyword: keyWord,
+    });
+  }
+
+  finishedWithArgs(args) {
+    let keyword = this.state.clickedKeyword.keyword;
+    let enteredKeywords = this.state.enteredKeywords;
+    enteredKeywords.push({keyword: keyword, args: args});
+    this.setState({
+      clickedKeyword: undefined,
+      currentWord: undefined,
+    });
+  }
+
   render() {
+    let enteredKeywordsJson = JSON.stringify(this.state.enteredKeywords);
     return (
       <form method="post" action="api/post" className="postWindow">
+        <EnteredKeywords
+          enteredKeywords={this.state.enteredKeywords}
+        />
+        <input type="hidden" id="entered-keywords-json" name="entered_keywords" value={enteredKeywordsJson}/>
+        <br />
+        <SelectKeyword
+          availableKeywords={this.state.availableKeywords}
+          keywordSelected={this.keywordSelected}
+          createKeyword={this.createKeyword}
+        />
+        <KeywordArgsWindow
+           keyword={this.state.clickedKeyword}
+           finishedWithArgs={this.finishedWithArgs}
+        />
+        <br />
         <HeaderWindow />
         <br />
         <BodyWindow />
@@ -39,133 +115,12 @@ class BodyWindow extends React.Component {
   constructor(props) {
     super(props);
 
-
-
     this.state = ({
       bodyText: '',
-      currentWord: '',
-      clickedKeyword: undefined,
-      matchingWords: [],
-      availableKeywords: [],
       caretPos: {x: 0, y: 0},
-      keywordArgs: undefined,
     });
 
-    $.ajax({
-      url: '/api/tags_and_args',
-      method: 'GET',
-      dataType: 'json',
-      success: function(json_data, status, jqXHR) {
-        this.setState({availableKeywords: json_data.data})
-      }.bind(this),
-    });
-
-    // var that = this;
-    // $.ajax({
-    //   url: '/api/tags_and_args',
-    //   method: 'GET',
-    //   dataType: 'json',
-    //   success: function(data, status, jqXHR) {
-    //     that.setState({availableKeywords: data.data})
-    //   },
-    //   error: function(jqXHR, status, error) {
-    //     var x = 0;
-    //   }
-    //
-    // });
-
-    this.setKeywordInEditor = undefined;
-
-    this.keywordClicked= this.keywordClicked.bind(this);
-    this.newArgSubmit = this.newArgSubmit.bind(this);
-    this.finishedWithArgs = this.finishedWithArgs.bind(this);
-    this.updateCurrentWord = this.updateCurrentWord.bind(this);
     this.updateCaretPos = this.updateCaretPos.bind(this);
-    this.registerSetKeywordInEditor = this.registerSetKeywordInEditor.bind(this);
-  }
-
-  keywordClicked(e, rid, clickedKeyword) {
-    // var currentWord = this.state.currentWord;
-    // var clickedWord = e.currentTarget.textContent;
-    // var caretCursorPos = this.state.caretCursorPos;
-    // var currentText = this.state.bodyText;
-    // var clickedKeyword = this.state.availableKeywords[key];
-
-    // var newText = currentText.substring(0, caretCursorPos - currentWord.length + 1) +
-    //     clickedWord +
-    //     currentText.substring(caretCursorPos + currentWord.length);
-
-    this.setState({
-      // bodyText: newText,
-      clickedKeyword: clickedKeyword,
-    });
-    // $('#postTextarea').val(newText);
-    // document.getElementById("keyWordSelectionWindow").style.visibility = 'hidden';
-    //
-    // document.getElementById("keywordArgsWindow").style.visibility = 'visible';
-
-    // document.getElementById("newKeyword").styl
-
-  }
-
-  finishedWithArgs(args) {
-    this.setKeywordInEditor(this.state.currentWord, this.state.clickedKeyword, args);
-    this.setState({
-      clickedKeyword: undefined,
-      currentWord: '',
-    });
-
-  }
-
-  registerSetKeywordInEditor(func) {
-    this.setKeywordInEditor = func;
-  }
-  
-  newArgClicked() {
-    document.getElementById("newArg").style.visibility = 'visible';
-  }
-
-  newArgSubmit(e, rid) {
-    document.getElementById("newArg").style.visibility = 'hidden';
-
-    var $parent = $(e.currentTarget).parent();
-    var $argName = $parent.children('#arg-name');
-    var $argType = $parent.children('#arg-type');
-    var newArg = {
-      name: $argName.val(),
-      type: $argType.val(),
-    };
-    var clickedKeyword = this.state.clickedKeyword;
-
-    var that = this;
-    $.ajax({
-      url: '/api/new_arg',
-      method: 'POST',
-      contentType: 'application/json',
-      data: JSON.stringify({
-        keyword: clickedKeyword.keyword,
-        arg: newArg
-      }),
-
-      success: function(data, status, jqXHR) {
-        console.log('success!');
-        clickedKeyword.args.push(newArg);
-        that.setState({
-          clickedKeyword: clickedKeyword
-        });
-      },
-      error: function(jqXHR, status, error) {
-        console.log('error!');
-        var x = 0;
-      }
-
-    });
-
-    console.log(newArg);
-  }
-
-  updateCurrentWord(word) {
-    this.setState({currentWord: word});
   }
 
   updateCaretPos(caretPos) {
@@ -179,19 +134,6 @@ class BodyWindow extends React.Component {
           updateCurrentWord={this.updateCurrentWord}
           updateCaretPos={this.updateCaretPos}
           registerSetKeywordInEditor = {this.registerSetKeywordInEditor}
-        />
-
-        <KeyWordSelectionWindow
-          currentWord={this.state.currentWord}
-          caretPos={this.state.caretPos}
-          keywordClicked={this.keywordClicked}
-          availableKeywords={this.state.availableKeywords}
-        />
-        <KeywordArgsWindow
-           keyword={this.state.clickedKeyword}
-           newArgClicked={this.newArgClicked}
-           finishedWithArgs={this.finishedWithArgs}
-           availableKeywords={this.state.availableKeywords}
         />
       </div>
     );

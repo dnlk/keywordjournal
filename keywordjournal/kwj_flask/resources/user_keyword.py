@@ -19,7 +19,7 @@ def get(user_id, keyword):
 
 
 def get_all_keywords_with_args(user_id):
-    return db.query(UserKeyword).join(UserArg).filter(UserKeyword.user_id == user_id).all()
+    return db.query(UserKeyword).outerjoin(UserArg).filter(UserKeyword.user_id == user_id).all()
 
 
 def create(keyword, user_id):

@@ -14,10 +14,10 @@ export class TextEditor extends React.Component {
     this.handleKeyStroke = this.handleKeyStroke.bind(this);
     this.key = this.key.bind(this);
     this.createPartialKeyword = this.createPartialKeyword.bind(this);
-    this.setKeyword = this.setKeyword.bind(this);
   }
 
   key(e) {
+    // TODO - this function is useful for making sure that text in a kwj-keyword span does not get edited
 
     if (e.key === 'Shift' || e.key === 'Control' || e.key === 'Alt') {
       e.preventDefault();
@@ -55,7 +55,6 @@ export class TextEditor extends React.Component {
 
     editor.insertText(startText);
 
-    // parentNode.setText(text.slice(0, -1));  // All but last char
     let html_to_insert = '<span class="kwj-keyword-partial">#</span>';
     editor.insertHtml(html_to_insert);
 
@@ -68,6 +67,8 @@ export class TextEditor extends React.Component {
   }
 
   handleKeyStroke(e) {
+    // TODO - this function is useful for getting the caret position of the text editor, so that a dropdown selection
+    // TODO - can be placed at the right place, for example.
 
     let editor = CKEDITOR.instances.postTextarea;
     let selection = editor.getSelection();
@@ -77,29 +78,29 @@ export class TextEditor extends React.Component {
 
     let text = parentNode.getText();
 
-
-    if (!parentNode.hasClass('kwj-keyword-partial')) {
-      // This block will handle resetting currentWord when the kwj-keyword-partial span is deleted. The awkwardness
-      // is due to the way that keyup is double firing, once for the inner text container, and once for the
-      // kwj-keyword-partial span.
-      if (!(range.startContainer.hasClass === undefined) && !range.startContainer.hasClass('kwj-keyword-partial')) {
-        this.props.updateCurrentWord({});
-
-        return;
-      }
-
-      if (range.startContainer.hasClass === undefined) {
-
-        this.props.updateCurrentWord({});
-
-        if (text.length > 0 && text[range.startOffset - 1] === '#') {  // Last char in text
-          this.createPartialKeyword(range);
-        }
-
-        return;
-      }
-
-    }
+    // TODO - some of this code block was useful for inserting a keyword span inline with the text editor
+    // if (!parentNode.hasClass('kwj-keyword-partial')) {
+    //   // This block will handle resetting currentWord when the kwj-keyword-partial span is deleted. The awkwardness
+    //   // is due to the way that keyup is double firing, once for the inner text container, and once for the
+    //   // kwj-keyword-partial span.
+    //   if (!(range.startContainer.hasClass === undefined) && !range.startContainer.hasClass('kwj-keyword-partial')) {
+    //     this.props.updateCurrentWord({});
+    //
+    //     return;
+    //   }
+    //
+    //   if (range.startContainer.hasClass === undefined) {
+    //
+    //     this.props.updateCurrentWord({});
+    //
+    //     if (text.length > 0 && text[range.startOffset - 1] === '#') {  // Last char in text
+    //       this.createPartialKeyword(range);
+    //     }
+    //
+    //     return;
+    //   }
+    //
+    // }
 
 
 
@@ -140,25 +141,25 @@ export class TextEditor extends React.Component {
 
   }
 
-  setKeyword(currentKeyword, clickedKeyword, args) {
-    let parentNode = currentKeyword.range.startContainer.getParent();
-    parentNode.removeClass('kwj-keyword-partial');
-    parentNode.addClass('kwj-keyword');
-
-    let json_args = JSON.stringify(args);
-    parentNode.setAttributes({
-      'kwj-args': json_args
-    });
-
-    parentNode.setText(clickedKeyword.keyword);
-
-    let editor = CKEDITOR.instances.postTextarea;
-    let selection = editor.getSelection();
-    let range = selection.getRanges()[0];
-    range.moveToPosition(parentNode, CKEDITOR.POSITION_AFTER_END);
-    range.select();
-    editor.insertText(' ');
-  }
+  // setKeyword(currentKeyword, clickedKeyword, args) {
+  //   let parentNode = currentKeyword.range.startContainer.getParent();
+  //   parentNode.removeClass('kwj-keyword-partial');
+  //   parentNode.addClass('kwj-keyword');
+  //
+  //   let json_args = JSON.stringify(args);
+  //   parentNode.setAttributes({
+  //     'kwj-args': json_args
+  //   });
+  //
+  //   parentNode.setText(clickedKeyword.keyword);
+  //
+  //   let editor = CKEDITOR.instances.postTextarea;
+  //   let selection = editor.getSelection();
+  //   let range = selection.getRanges()[0];
+  //   range.moveToPosition(parentNode, CKEDITOR.POSITION_AFTER_END);
+  //   range.select();
+  //   editor.insertText(' ');
+  // }
 
   componentDidMount(e) {
     let that = this;
@@ -174,16 +175,14 @@ export class TextEditor extends React.Component {
 
     let editor = CKEDITOR.replace(TextBoxID, {
       allowedContent: true,
-      on: {
-        contentDom: function() {
-          this.document.$.addEventListener( 'keydown', that.key);
-        }
-      }
+      // on: {
+      //   contentDom: function() {
+      //     this.document.$.addEventListener( 'keydown', that.key);
+      //   }
+      // }
     });
 
-    editor.on('change', this.handleKeyStroke);
-
-    this.props.registerSetKeywordInEditor(this.setKeyword);
+    // editor.on('change', this.handleKeyStroke);
   }
 
   render() {
@@ -197,4 +196,3 @@ export class TextEditor extends React.Component {
     )
   }
 }
-

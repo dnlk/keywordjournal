@@ -1,6 +1,7 @@
 # Author: Daniel Kinney
 # All rights reserved
 
+import json
 import re
 
 import flask
@@ -69,12 +70,14 @@ def post():
         user_id = flask.session['user_id']
         post_body = request.form['post_body']
 
-        posted_keywords = _parse_post_text(post_body)
+        posted_keywords = json.loads(request.form['entered_keywords'])
 
         post_title = request.form['post_title']
         post_res = post_resource.create(user_id, post_title, post_body)
 
-        for keyword, args in posted_keywords.items():
+        for posted_keyword in posted_keywords:
+            keyword = posted_keyword['keyword']
+            args = posted_keyword['args']
             resources.user_keyword_posted.create(
                 user_id=user_id,
                 post_id=post_res.id,
