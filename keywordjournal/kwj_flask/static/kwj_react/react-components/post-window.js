@@ -32,6 +32,7 @@ export class PostWindow extends React.Component {
     this.finishedWithArgs = this.finishedWithArgs.bind(this);
     this.finishedWithEditingArgs = this.finishedWithEditingArgs.bind(this);
     this.keywordReSelected = this.keywordReSelected.bind(this);
+    this.removeEnteredKeyword = this.removeEnteredKeyword.bind(this);
 
   }
 
@@ -69,6 +70,7 @@ export class PostWindow extends React.Component {
       clickedKeywordEntered: keyword,
       clickedKeywordEnteredEntry: enteredKeyword,
       clickedKeywordEnteredArgs: enteredKeyword.args,
+      clickedKeywordEnteredIndex: index,
     })
   }
 
@@ -89,7 +91,24 @@ export class PostWindow extends React.Component {
       clickedKeywordEntered: undefined,
       clickedKeywordEnteredArgs: undefined,
       clickedKeywordEnteredEntry: undefined,
+      clickedKeywordEnteredIndex: undefined,
     });
+  }
+
+  removeEnteredKeyword() {
+    let index = this.state.clickedKeywordEnteredIndex;
+    if (index !== undefined && index !== -1) {
+      this.state.enteredKeywords.splice(index, 1  );
+    }
+    this.setState({
+      clickedKeyword: undefined,
+      currentWord: undefined,
+
+      clickedKeywordEntered: undefined,
+      clickedKeywordEnteredArgs: undefined,
+      clickedKeywordEnteredEntry: undefined,
+      clickedKeywordEnteredIndex: undefined,
+    })
   }
 
   render() {
@@ -110,11 +129,13 @@ export class PostWindow extends React.Component {
         <KeywordArgsWindow
            keyword={this.state.clickedKeyword}
            finishedWithArgs={this.finishedWithArgs}
+           removeEnteredKeyword={this.removeEnteredKeyword}
         />
         <KeywordArgsWindow
            keyword={this.state.clickedKeywordEntered}
            defaultArgValues={this.state.clickedKeywordEnteredArgs}
            finishedWithArgs={this.finishedWithEditingArgs}
+           removeEnteredKeyword={this.removeEnteredKeyword}
         />
         <br />
         <HeaderWindow />

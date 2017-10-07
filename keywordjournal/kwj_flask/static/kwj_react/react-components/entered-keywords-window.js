@@ -13,10 +13,6 @@ function makeKeyword(i, keyword, that) {
 function makeEnteredKeyword(keyword, index, onClickCallback) {
   let args = keyword.args;
   let argsDisplayList = [];
-  if (("") in args) {
-    argsDisplayList.push(args[""]);
-    delete args[""];
-  }
 
   for (const argName of Object.keys(args)) {
     let argValue = args[argName];

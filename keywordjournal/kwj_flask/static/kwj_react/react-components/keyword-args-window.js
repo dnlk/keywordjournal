@@ -119,6 +119,8 @@ export class KeywordArgsWindow extends React.Component {
             'background-color': 'white',
         };
 
+        let that = this;
+
         return (
             <div className="keywordArgsWindow" id="keywordArgsWindow" style={style}>
                 <h3>{keyword.keyword}</h3>
@@ -130,6 +132,7 @@ export class KeywordArgsWindow extends React.Component {
                 <input id={NEW_ARG_TYPE_ID} type="text" name="argType" placeholder="string"/>
                 <br />
                 <button type="button" onClick={this.finishedWithArgs}>Done</button>
+                <button type="button" onClick={() => that.props.removeEnteredKeyword(keyword)}>Remove</button>
             </div>
         );
     }
